@@ -1,0 +1,17 @@
+[
+  { "name": "Food & Dining", "icon": "food", "colour": "#E4572E" },
+  { "name": "Groceries", "icon": "cart", "colour": "#76B041" },
+  { "name": "Transport", "icon": "car", "colour": "#2E86AB" },
+  { "name": "Shopping", "icon": "bag", "colour": "#A23B72" },
+  { "name": "Bills & Recharges", "icon": "bolt", "colour": "#F1A208" },
+  { "name": "Rent", "icon": "home", "colour": "#6C4F3D" },
+  { "name": "Health", "icon": "heart", "colour": "#D7263D" },
+  { "name": "Education", "icon": "book", "colour": "#3F88C5" },
+  { "name": "Entertainment", "icon": "film", "colour": "#7B2CBF" },
+  { "name": "Subscriptions", "icon": "repeat", "colour": "#1B998B" },
+  { "name": "Family", "icon": "users", "colour": "#F49D37" },
+  { "name": "Friends / Splits", "icon": "user-plus", "colour": "#3BB273" },
+  { "name": "Transfers (self)", "icon": "swap", "colour": "#8D99AE" },
+  { "name": "Income", "icon": "arrow-down", "colour": "#2A9D8F" },
+  { "name": "Other", "icon": "dots", "colour": "#6C757D" }
+]

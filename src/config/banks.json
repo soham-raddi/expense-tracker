@@ -1,0 +1,4 @@
+{
+  "_comment": "Sender codes are the 6-letter part of the SMS sender ID, e.g. VM-ICICIT or AD-ICICIB-S -> ICICIT / ICICIB. Check these against your phone's SMS inbox.",
+  "icici": { "name": "ICICI Bank", "senderCodes": ["ICICIB", "ICICIT"] }
+}

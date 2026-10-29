@@ -1,0 +1,47 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- No INTERNET here on purpose. Debug builds get it from src/debug (Metro only);
+         release builds strip it from every library in src/release. -->
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application
+      android:name=".MainApplication"
+      android:label="@string/app_name"
+      android:icon="@mipmap/ic_launcher"
+      android:roundIcon="@mipmap/ic_launcher_round"
+      android:allowBackup="false"
+      android:fullBackupContent="false"
+      android:dataExtractionRules="@xml/data_extraction_rules"
+      android:theme="@style/AppTheme"
+      android:usesCleartextTraffic="${usesCleartextTraffic}"
+      android:supportsRtl="true">
+      <activity
+        android:name=".MainActivity"
+        android:label="@string/app_name"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
+        android:launchMode="singleTask"
+        android:windowSoftInputMode="adjustResize"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+      </activity>
+
+      <!-- Live bank SMS. Only the system (BROADCAST_SMS holder) can send to it. -->
+      <receiver
+        android:name="com.upitracker.sms.SmsReceiver"
+        android:permission="android.permission.BROADCAST_SMS"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+        </intent-filter>
+      </receiver>
+
+      <service
+        android:name="com.upitracker.sms.SmsHeadlessService"
+        android:exported="false" />
+    </application>
+</manifest>

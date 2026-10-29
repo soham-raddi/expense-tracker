@@ -1,0 +1,26 @@
+{
+  "_comment": "Added in database migration 3. Each entry becomes one rule per keyword. Keywords of 3 letters or fewer must match a whole word; longer ones match anywhere in the text. Priority: REMARK 20, named merchants 0, generic business words -10. Rules you add yourself get priority 50 and win over all of these.",
+  "rules": [
+    { "category": "Food & Dining", "field": "PAYEE_NAME", "priority": 0, "keywords": ["dominos", "domino's", "pizza hut", "mcdonald", "kfc", "burger king", "starbucks", "subway", "haldiram", "chaayos", "cafe coffee day", "barista", "behrouz", "faasos", "eatsure", "box8", "wow momo", "social offline"] },
+    { "category": "Transport", "field": "PAYEE_NAME", "priority": 0, "keywords": ["namma yatri", "redbus", "abhibus", "metro", "fastag", "indian oil", "iocl", "bpcl", "hpcl", "petrol", "uber", "ola", "rapido"] },
+    { "category": "Entertainment", "field": "PAYEE_NAME", "priority": 0, "keywords": ["bookmyshow", "pvr", "inox"] },
+    { "category": "Health", "field": "PAYEE_NAME", "priority": 0, "keywords": ["apollo", "pharmeasy", "1mg", "netmeds", "medplus"] },
+    { "category": "Education", "field": "PAYEE_NAME", "priority": 0, "keywords": ["udemy", "coursera", "byju", "unacademy"] },
+    { "category": "Shopping", "field": "PAYEE_NAME", "priority": 0, "keywords": ["ajio", "nykaa", "meesho", "croma", "decathlon"] },
+    { "category": "Groceries", "field": "PAYEE_NAME", "priority": 0, "keywords": ["reliance fresh", "jiomart", "swiggy instamart", "licious", "country delight"] },
+    { "category": "Bills & Recharges", "field": "PAYEE_NAME", "priority": 0, "keywords": ["bsnl", "tata power", "adani electricity", "act fibernet", "indane", "bharat gas", "electricity", "recharge"] },
+
+    { "category": "Groceries", "field": "PAYEE_NAME", "priority": -10, "keywords": ["kirana", "general store", "provision", "supermarket", "vegetable", "fruits", "dairy", "milk"] },
+    { "category": "Health", "field": "PAYEE_NAME", "priority": -10, "keywords": ["medical", "pharmacy", "chemist", "hospital", "clinic", "diagnostic", "dental"] },
+    { "category": "Transport", "field": "PAYEE_NAME", "priority": -10, "keywords": ["travels", "cab", "taxi", "auto"] },
+    { "category": "Food & Dining", "field": "PAYEE_NAME", "priority": -10, "keywords": ["restaurant", "hotel", "cafe", "bakery", "tiffin", "dhaba", "juice", "sweets", "biryani", "pizza", "burger", "kitchen", "canteen"] },
+
+    { "category": "Transport", "field": "REMARK", "priority": 20, "keywords": ["auto", "cab", "taxi", "bus", "metro", "petrol", "fuel"] },
+    { "category": "Food & Dining", "field": "REMARK", "priority": 20, "keywords": ["chai", "tea", "coffee", "lunch", "dinner", "breakfast", "snacks", "food", "veg", "juice"] },
+    { "category": "Rent", "field": "REMARK", "priority": 20, "keywords": ["rent"] },
+    { "category": "Bills & Recharges", "field": "REMARK", "priority": 20, "keywords": ["recharge", "bill", "electricity", "wifi", "broadband"] },
+    { "category": "Groceries", "field": "REMARK", "priority": 20, "keywords": ["grocery", "groceries", "vegetables", "milk"] },
+    { "category": "Entertainment", "field": "REMARK", "priority": 20, "keywords": ["movie", "movies"] },
+    { "category": "Health", "field": "REMARK", "priority": 20, "keywords": ["medicine", "medicines", "doctor"] }
+  ]
+}

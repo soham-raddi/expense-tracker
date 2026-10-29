@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(**/*.db)",
+      "Read(**/*.sqlite)",
+      "Read(**/real-data/**)",
+      "Read(**/statements/**)",
+      "Bash(adb pull:*)"
+    ]
+  }
+}

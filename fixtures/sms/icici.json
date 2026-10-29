@@ -1,0 +1,111 @@
+{
+  "_comment": "SYNTHETIC ONLY. Real ICICI wording, fake names, amounts, account digits and refs. Never paste real SMS here.",
+  "cases": [
+    {
+      "name": "UPI debit to a person",
+      "sender": "VM-ICICIT",
+      "receivedAt": "2026-10-28T14:05:00+05:30",
+      "body": "ICICI Bank Acct XX123 debited for Rs 120.00 on 28-Oct-26; Test Payee One credited. UPI:512345678901. Call 18002662 for dispute. SMS BLOCK 123 to 9215676766.",
+      "expect": {
+        "kind": "txn",
+        "txn": {
+          "amountPaise": 12000,
+          "direction": "DEBIT",
+          "mode": "UPI",
+          "payeeName": "Test Payee One",
+          "upiRef": "512345678901",
+          "maskedAccount": "XX123",
+          "timestamp": "2026-10-28T14:05:00+05:30"
+        }
+      }
+    },
+    {
+      "name": "UPI debit with comma amount",
+      "sender": "AD-ICICIB-S",
+      "receivedAt": "2026-10-20T09:30:00+05:30",
+      "body": "ICICI Bank Acct XX123 debited for Rs 1,250.50 on 20-Oct-26; Fake Store Name credited. UPI:512345678902. Call 18002662 for dispute. SMS BLOCK 123 to 9215676766.",
+      "expect": {
+        "kind": "txn",
+        "txn": {
+          "amountPaise": 125050,
+          "direction": "DEBIT",
+          "mode": "UPI",
+          "payeeName": "Fake Store Name",
+          "upiRef": "512345678902"
+        }
+      }
+    },
+    {
+      "name": "UPI AutoPay mandate debit",
+      "sender": "VM-ICICIT",
+      "receivedAt": "2026-10-26T06:00:00+05:30",
+      "body": "Rs 89.00 debited from ICICI Bank Savings Account XX123 on 26-Oct-26 towards YouTube for UPI Mandate AutoPay Retrieval Ref No.512345678903",
+      "expect": {
+        "kind": "txn",
+        "txn": {
+          "amountPaise": 8900,
+          "direction": "DEBIT",
+          "mode": "AUTOPAY",
+          "payeeName": "YouTube",
+          "upiRef": "512345678903",
+          "maskedAccount": "XX123"
+        }
+      }
+    },
+    {
+      "name": "UPI credit from a person",
+      "sender": "VM-ICICIT",
+      "receivedAt": "2026-10-27T20:15:00+05:30",
+      "body": "Dear Customer, Acct XX123 is credited with Rs 10.00 on 27-Oct-26 from TEST SENDER TWO . UPI:512345678904-ICICI Bank.",
+      "expect": {
+        "kind": "txn",
+        "txn": {
+          "amountPaise": 1000,
+          "direction": "CREDIT",
+          "mode": "UPI",
+          "payeeName": "TEST SENDER TWO",
+          "upiRef": "512345678904",
+          "maskedAccount": "XX123"
+        }
+      }
+    },
+    {
+      "name": "Delayed SMS uses the stated date (midnight IST)",
+      "sender": "VM-ICICIT",
+      "receivedAt": "2026-10-31T10:00:00+05:30",
+      "body": "ICICI Bank Acct XX123 debited for Rs 60.00 on 27-Oct-26; Test Payee Three credited. UPI:512345678905. Call 18002662 for dispute. SMS BLOCK 123 to 9215676766.",
+      "expect": {
+        "kind": "txn",
+        "txn": { "amountPaise": 6000, "timestamp": "2026-10-27T00:00:00+05:30" }
+      }
+    },
+    {
+      "name": "LOGIC TEST (not real ICICI wording): bank SMS in an unknown transaction format goes to Unparsed",
+      "sender": "VM-ICICIT",
+      "receivedAt": "2026-10-28T12:00:00+05:30",
+      "body": "Your account XX123 has been debited Rs 500.00 by an unknown format.",
+      "expect": { "kind": "unparsed" }
+    },
+    {
+      "name": "LOGIC TEST (not real ICICI wording): OTP is ignored. Replace with a real-format synthetic ICICI OTP SMS.",
+      "sender": "VM-ICICIT",
+      "receivedAt": "2026-10-28T12:00:00+05:30",
+      "body": "999999 is your OTP for a transaction of Rs 500.00 debited from Acct XX123. Do not share it with anyone.",
+      "expect": { "kind": "ignored" }
+    },
+    {
+      "name": "LOGIC TEST (not real ICICI wording): promotional SMS is ignored. Replace with a real-format synthetic ICICI promo SMS.",
+      "sender": "VM-ICICIB",
+      "receivedAt": "2026-10-28T12:00:00+05:30",
+      "body": "Get a pre-approved personal loan instantly. Apply now on iMobile.",
+      "expect": { "kind": "ignored" }
+    },
+    {
+      "name": "SMS from a non-bank sender is ignored",
+      "sender": "VM-RANDOM",
+      "receivedAt": "2026-10-28T12:00:00+05:30",
+      "body": "ICICI Bank Acct XX123 debited for Rs 120.00 on 28-Oct-26; Test Payee One credited. UPI:512345678901.",
+      "expect": { "kind": "ignored" }
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+[
+  { "category": "Food & Dining", "field": "PAYEE_NAME", "keywords": ["swiggy", "zomato"] },
+  { "category": "Transport", "field": "PAYEE_NAME", "keywords": ["uber", "ola", "rapido", "irctc"] },
+  { "category": "Bills & Recharges", "field": "PAYEE_NAME", "keywords": ["jio", "airtel", "vi", "bescom", "msedcl"] },
+  { "category": "Groceries", "field": "PAYEE_NAME", "keywords": ["blinkit", "zepto", "bigbasket", "dmart"] },
+  { "category": "Shopping", "field": "PAYEE_NAME", "keywords": ["amazon", "flipkart", "myntra"] },
+  { "category": "Subscriptions", "field": "PAYEE_NAME", "keywords": ["netflix", "spotify", "hotstar", "youtube"] }
+]

@@ -1,0 +1,81 @@
+// SQLite schema. Each entry is one migration; never edit an old one, append a new one.
+
+export const MIGRATIONS: string[][] = [
+  [
+    `CREATE TABLE categories (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL UNIQUE,
+      icon TEXT NOT NULL,
+      colour TEXT NOT NULL,
+      is_default INTEGER NOT NULL DEFAULT 0
+    )`,
+    `CREATE TABLE payees (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      vpa TEXT UNIQUE,
+      display_name TEXT NOT NULL,
+      kind TEXT NOT NULL DEFAULT 'UNKNOWN',
+      relation TEXT,
+      default_category_id INTEGER REFERENCES categories(id) ON DELETE SET NULL,
+      always_ask INTEGER NOT NULL DEFAULT 0,
+      contact_lookup_key TEXT
+    )`,
+    `CREATE TABLE transactions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      amount_paise INTEGER NOT NULL,
+      direction TEXT NOT NULL,
+      timestamp INTEGER NOT NULL,
+      mode TEXT NOT NULL,
+      payee_id INTEGER REFERENCES payees(id) ON DELETE SET NULL,
+      upi_ref TEXT UNIQUE,
+      masked_account TEXT,
+      remark TEXT,
+      category_id INTEGER REFERENCES categories(id) ON DELETE SET NULL,
+      category_source TEXT NOT NULL DEFAULT 'NONE',
+      confidence REAL NOT NULL DEFAULT 0,
+      source TEXT NOT NULL,
+      raw_text TEXT NOT NULL,
+      lat REAL,
+      lng REAL
+    )`,
+    'CREATE INDEX idx_txn_timestamp ON transactions(timestamp)',
+    'CREATE INDEX idx_txn_payee ON transactions(payee_id)',
+    `CREATE TABLE rules (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      match_field TEXT NOT NULL,
+      pattern TEXT NOT NULL,
+      category_id INTEGER NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
+      priority INTEGER NOT NULL DEFAULT 0
+    )`,
+    // Bank SMS that no parser could read. Kept so nothing is silently dropped.
+    `CREATE TABLE unparsed_sms (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      sender TEXT NOT NULL,
+      body TEXT NOT NULL,
+      timestamp INTEGER NOT NULL,
+      UNIQUE(sender, timestamp, body)
+    )`,
+  ],
+  [
+    // Running balance from statements; used to tell identical same-day payments apart.
+    'ALTER TABLE transactions ADD COLUMN balance_paise INTEGER',
+    // One row per statement import. The file itself is never kept, only these counts.
+    `CREATE TABLE statement_imports (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      imported_at INTEGER NOT NULL,
+      bank_id TEXT NOT NULL,
+      masked_account TEXT,
+      from_date INTEGER NOT NULL,
+      to_date INTEGER NOT NULL,
+      rows_read INTEGER NOT NULL,
+      rows_matched INTEGER NOT NULL,
+      rows_new INTEGER NOT NULL,
+      rows_failed INTEGER NOT NULL
+    )`,
+  ],
+  [
+    // Categories that must not count towards spending totals, e.g. money moved between own accounts.
+    'ALTER TABLE categories ADD COLUMN exclude_from_totals INTEGER NOT NULL DEFAULT 0',
+    "UPDATE categories SET exclude_from_totals = 1 WHERE name = 'Transfers (self)'",
+    // More seed rules are inserted from src/config/seedRulesV2.json in db.ts.
+  ],
+];
