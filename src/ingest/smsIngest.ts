@@ -1,8 +1,14 @@
 // Turns raw SMS into stored transactions (or Unparsed entries).
 
 import { getDb } from '../data/db';
-import { insertSmsTxn, insertUnparsed } from '../data/repos/transactionsRepo';
+import {
+  deleteUnparsed,
+  insertSmsTxn,
+  insertUnparsed,
+  unparsedList,
+} from '../data/repos/transactionsRepo';
 import type { RawSms } from '../data/types';
+import { planReprocess } from './reprocess';
 import { routeSms } from './registry';
 import { emitDataChanged } from '../lib/events';
 import { readInbox } from './smsNative';
@@ -27,6 +33,24 @@ export async function ingestSms(sms: RawSms): Promise<IngestOutcome> {
   return saved ? 'saved' : 'duplicate';
 }
 
+/** Re-checks the Unparsed list with the current parsers. Returns how many entries were resolved. */
+export async function reprocessUnparsed(): Promise<number> {
+  const db = await getDb();
+  const plan = planReprocess(await unparsedList(db));
+  for (const { id, txn } of plan.toSave) {
+    await insertSmsTxn(db, txn); // false when it is already saved; either way it leaves the list
+    await deleteUnparsed(db, id);
+  }
+  for (const id of plan.toDelete) {
+    await deleteUnparsed(db, id);
+  }
+  const resolved = plan.toSave.length + plan.toDelete.length;
+  if (resolved > 0) {
+    emitDataChanged();
+  }
+  return resolved;
+}
+
 const SIX_MONTHS_MS = 183 * 24 * 60 * 60 * 1000;
 
 export async function importInbox(): Promise<Record<IngestOutcome, number>> {
@@ -36,6 +60,7 @@ export async function importInbox(): Promise<Record<IngestOutcome, number>> {
     unparsed: 0,
     ignored: 0,
   };
+  await reprocessUnparsed();
   const messages = await readInbox(Date.now() - SIX_MONTHS_MS);
   for (const sms of messages) {
     counts[await ingestSms(sms)]++;

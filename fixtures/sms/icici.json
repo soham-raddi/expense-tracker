@@ -76,7 +76,10 @@
       "body": "ICICI Bank Acct XX123 debited for Rs 60.00 on 27-Oct-26; Test Payee Three credited. UPI:512345678905. Call 18002662 for dispute. SMS BLOCK 123 to 9215676766.",
       "expect": {
         "kind": "txn",
-        "txn": { "amountPaise": 6000, "timestamp": "2026-10-27T00:00:00+05:30" }
+        "txn": {
+          "amountPaise": 6000,
+          "timestamp": "2026-10-27T00:00:00+05:30"
+        }
       }
     },
     {
@@ -84,28 +87,163 @@
       "sender": "VM-ICICIT",
       "receivedAt": "2026-10-28T12:00:00+05:30",
       "body": "Your account XX123 has been debited Rs 500.00 by an unknown format.",
-      "expect": { "kind": "unparsed" }
+      "expect": {
+        "kind": "unparsed"
+      }
     },
     {
       "name": "LOGIC TEST (not real ICICI wording): OTP is ignored. Replace with a real-format synthetic ICICI OTP SMS.",
       "sender": "VM-ICICIT",
       "receivedAt": "2026-10-28T12:00:00+05:30",
       "body": "999999 is your OTP for a transaction of Rs 500.00 debited from Acct XX123. Do not share it with anyone.",
-      "expect": { "kind": "ignored" }
+      "expect": {
+        "kind": "ignored"
+      }
     },
     {
       "name": "LOGIC TEST (not real ICICI wording): promotional SMS is ignored. Replace with a real-format synthetic ICICI promo SMS.",
       "sender": "VM-ICICIB",
       "receivedAt": "2026-10-28T12:00:00+05:30",
       "body": "Get a pre-approved personal loan instantly. Apply now on iMobile.",
-      "expect": { "kind": "ignored" }
+      "expect": {
+        "kind": "ignored"
+      }
     },
     {
       "name": "SMS from a non-bank sender is ignored",
       "sender": "VM-RANDOM",
       "receivedAt": "2026-10-28T12:00:00+05:30",
       "body": "ICICI Bank Acct XX123 debited for Rs 120.00 on 28-Oct-26; Test Payee One credited. UPI:512345678901.",
-      "expect": { "kind": "ignored" }
+      "expect": {
+        "kind": "ignored"
+      }
+    },
+    {
+      "name": "Cash deposit credit with balance",
+      "sender": "VM-ICICIT",
+      "receivedAt": "2026-10-29T11:00:00+05:30",
+      "body": "ICICI Bank Account XX123 credited:Rs. 5,000.00 on 29-Oct-26. Info BY CASH -TEST CITY - TEST BRANCH SELF. Available Balance is Rs. 6,543.21.",
+      "expect": {
+        "kind": "txn",
+        "txn": {
+          "amountPaise": 500000,
+          "direction": "CREDIT",
+          "mode": "OTHER",
+          "payeeName": "BY CASH -TEST CITY - TEST BRANCH SELF",
+          "upiRef": null,
+          "maskedAccount": "XX123",
+          "balancePaise": 654321
+        }
+      }
+    },
+    {
+      "name": "Transfer credit (Info code) with balance",
+      "sender": "VM-ICICIT",
+      "receivedAt": "2026-09-01T10:00:00+05:30",
+      "body": "ICICI Bank Account XX123 credited:Rs. 20,000.00 on 01-Sep-26. Info BIL*INFT*FI12345678*. Available Balance is Rs. 23,000.99.",
+      "expect": {
+        "kind": "txn",
+        "txn": {
+          "amountPaise": 2000000,
+          "direction": "CREDIT",
+          "mode": "OTHER",
+          "payeeName": "BIL*INFT*FI12345678*",
+          "balancePaise": 2300099
+        }
+      }
+    },
+    {
+      "name": "AutoPay debit with a Create Mandate (no comma in amount)",
+      "sender": "VM-ICICIT",
+      "receivedAt": "2026-10-14T06:00:00+05:30",
+      "body": "Rs 1999.00 debited from ICICI Bank Savings Account XX123 on 14-Oct-26 towards TEST MEDIA SER for Create Mandate AutoPay Retrieval Ref No.512345678944",
+      "expect": {
+        "kind": "txn",
+        "txn": {
+          "amountPaise": 199900,
+          "direction": "DEBIT",
+          "mode": "AUTOPAY",
+          "payeeName": "TEST MEDIA SER",
+          "upiRef": "512345678944",
+          "maskedAccount": "XX123"
+        }
+      }
+    },
+    {
+      "name": "Debit with a short note and C. Bal (double space)",
+      "sender": "VM-ICICIT",
+      "receivedAt": "2026-09-11T15:00:00+05:30",
+      "body": "Rs. 70.00 debited from ICICI Bank Acc XX123 on 11-Sep-26 MIN*Retail  C. Bal Rs. 1,234.56. If not you call 18002662 or SMS BLOCK 123 to 9215676766",
+      "expect": {
+        "kind": "txn",
+        "txn": {
+          "amountPaise": 7000,
+          "direction": "DEBIT",
+          "mode": "OTHER",
+          "payeeName": "MIN*Retail",
+          "balancePaise": 123456,
+          "maskedAccount": "XX123"
+        }
+      }
+    },
+    {
+      "name": "Debit with a short note and '. Bal' variant",
+      "sender": "VM-ICICIT",
+      "receivedAt": "2026-04-30T13:00:00+05:30",
+      "body": "Rs. 799.00 debited from ICICI Bank Acc XX123 on 30-Apr-26 MIN*TESTWEAR . Bal Rs. 171.48. If not you call 18002662 or SMS BLOCK 123 to 9215676766",
+      "expect": {
+        "kind": "txn",
+        "txn": {
+          "amountPaise": 79900,
+          "direction": "DEBIT",
+          "mode": "OTHER",
+          "payeeName": "MIN*TESTWEAR",
+          "balancePaise": 17148
+        }
+      }
+    },
+    {
+      "name": "Debit with an Info code and Avl Bal",
+      "sender": "VM-ICICIT",
+      "receivedAt": "2026-05-22T09:00:00+05:30",
+      "body": "ICICI Bank Acc XX123 debited Rs. 2,345.60 on 22-May-26 Info1234NTC000001.Avl Bal Rs. 9,384.27.To dispute call 18002662 or SMS BLOCK 123 to 9215676766",
+      "expect": {
+        "kind": "txn",
+        "txn": {
+          "amountPaise": 234560,
+          "direction": "DEBIT",
+          "mode": "OTHER",
+          "payeeName": "1234NTC000001",
+          "balancePaise": 938427
+        }
+      }
+    },
+    {
+      "name": "Notice: AutoPay will be debited (nothing debited yet)",
+      "sender": "VM-ICICIT",
+      "receivedAt": "2026-10-28T12:00:00+05:30",
+      "body": "ICICI Bank SAVINGS Account XX123 will be debited for Rs 89.00 on 26-Oct-26 towards Autopay for TestApp, UPI Mandate, Unique Mandate Number xxxxxxxxxxxxxxxxxxxx",
+      "expect": {
+        "kind": "ignored"
+      }
+    },
+    {
+      "name": "Notice: someone requested money, on approval it will be debited",
+      "sender": "VM-ICICIT",
+      "receivedAt": "2026-10-28T12:00:00+05:30",
+      "body": "TESTUSER has requested money through Google-pay. On approval, Rs 199.00 will be debited from your Bank Account-ICICI Bank.",
+      "expect": {
+        "kind": "ignored"
+      }
+    },
+    {
+      "name": "Notice: standing instruction payment is due",
+      "sender": "VM-ICICIT",
+      "receivedAt": "2026-10-28T12:00:00+05:30",
+      "body": "Payment of INR 1950.00 towards Merchant Test Store - Content Purchase Services to be debited from ICICI Bank Debit Card 1234, as per Standing Instruction AbCdEfGh12, is due by 15/07/2026. To cancel this debit or your Standing Instructions, visit www.icici.bank.in - Personal - Cards - Manage Standing Instructions. Call 1800 1080 for queries",
+      "expect": {
+        "kind": "ignored"
+      }
     }
   ]
 }

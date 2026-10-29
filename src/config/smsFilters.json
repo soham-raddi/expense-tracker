@@ -1,10 +1,16 @@
 {
-  "_comment": "Regexes (case-insensitive). OTP SMS are ignored entirely. A bank SMS is only treated as a transaction if it matches a transactionHint AND an amountHint; otherwise it is ignored as promotional/informational.",
+  "_comment": "Regexes (case-insensitive). OTP SMS are ignored entirely. Notices of a payment that has not happened yet (will be debited, requested money, due by) are ignored because no money moved. A bank SMS is only treated as a transaction if it matches a transactionHint AND an amountHint; otherwise it is ignored as promotional/informational.",
   "otpPatterns": [
     "\\bOTP\\b[^0-9]{0,30}\\d{4,8}\\b",
     "\\b\\d{4,8}\\b[^0-9]{0,30}\\bOTP\\b",
     "one[- ]time password",
     "verification code"
+  ],
+  "noticePatterns": [
+    "will be debited",
+    "to be debited",
+    "has requested money",
+    "is due by"
   ],
   "transactionHints": ["debited", "credited", "spent", "withdrawn", "sent", "received"],
   "amountHints": ["\\bRs\\.?\\s?[\\d,]+", "\\bINR\\s?[\\d,]+", "₹\\s?[\\d,]+"]

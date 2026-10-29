@@ -3,6 +3,7 @@ import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { getDb } from './data/db';
 import { unparsedCount } from './data/repos/transactionsRepo';
+import { reprocessUnparsed } from './ingest/smsIngest';
 import { onDataChanged } from './lib/events';
 import { AppLock } from './ui/screens/AppLock';
 import { TabBar, type TabItem } from './ui/components/TabBar';
@@ -31,6 +32,8 @@ function Shell() {
 
   useEffect(() => {
     loadBadge();
+    // A newer parser may now understand messages that were unreadable before.
+    reprocessUnparsed().catch(() => {});
     return onDataChanged(loadBadge);
   }, [loadBadge]);
 

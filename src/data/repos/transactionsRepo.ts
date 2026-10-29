@@ -76,8 +76,8 @@ export async function insertSmsTxn(db: DB, txn: ParsedTxn): Promise<boolean> {
   await db.execute(
     `INSERT INTO transactions
       (amount_paise, direction, timestamp, mode, payee_id, upi_ref, masked_account, remark,
-       category_id, category_source, confidence, source, raw_text)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'SMS', ?)`,
+       category_id, category_source, confidence, source, raw_text, balance_paise)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'SMS', ?, ?)`,
     [
       txn.amountPaise,
       txn.direction,
@@ -91,6 +91,7 @@ export async function insertSmsTxn(db: DB, txn: ParsedTxn): Promise<boolean> {
       outcome.source,
       outcome.confidence,
       txn.rawText,
+      txn.balancePaise ?? null,
     ],
   );
   return true;
@@ -188,6 +189,10 @@ export async function unparsedList(db: DB): Promise<UnparsedRow[]> {
     body: String(r.body),
     timestamp: Number(r.timestamp),
   }));
+}
+
+export async function deleteUnparsed(db: DB, id: number): Promise<void> {
+  await db.execute('DELETE FROM unparsed_sms WHERE id = ?', [id]);
 }
 
 export async function unparsedCount(db: DB): Promise<number> {

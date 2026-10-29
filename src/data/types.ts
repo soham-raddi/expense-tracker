@@ -44,6 +44,7 @@ export interface ParsedTxn {
   payeeName: string | null;
   vpa: string | null; // lowercase
   upiRef: string | null;
+  balancePaise?: number | null; // account balance after this transaction, when the SMS shows it
   maskedAccount: string | null; // last digits only, e.g. "XX123"
   remark: string | null;
   rawText: string;
