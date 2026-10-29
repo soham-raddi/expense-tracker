@@ -4,6 +4,7 @@
 import { NativeModules, PermissionsAndroid, Platform } from 'react-native';
 import banks from '../config/banks.json';
 import type { RawSms } from '../data/types';
+import { keepUnlockedDuring } from '../lib/lockGuard';
 
 const { SmsReader } = NativeModules;
 
@@ -17,10 +18,12 @@ export async function requestSmsPermission(): Promise<boolean> {
   if (Platform.OS !== 'android') {
     return false;
   }
-  const result = await PermissionsAndroid.requestMultiple([
-    PermissionsAndroid.PERMISSIONS.READ_SMS,
-    PermissionsAndroid.PERMISSIONS.RECEIVE_SMS,
-  ]);
+  const result = await keepUnlockedDuring(() =>
+    PermissionsAndroid.requestMultiple([
+      PermissionsAndroid.PERMISSIONS.READ_SMS,
+      PermissionsAndroid.PERMISSIONS.RECEIVE_SMS,
+    ]),
+  );
   return Object.values(result).every(r => r === PermissionsAndroid.RESULTS.GRANTED);
 }
 

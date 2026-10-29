@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "UpiTracker.app"
-               BlueprintName = "UpiTracker"
-               ReferencedContainer = "container:UpiTracker.xcodeproj">
+               BuildableName = "ExpenseTracker.app"
+               BlueprintName = "ExpenseTracker"
+               ReferencedContainer = "container:ExpenseTracker.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "UpiTrackerTests.xctest"
-               BlueprintName = "UpiTrackerTests"
-               ReferencedContainer = "container:UpiTracker.xcodeproj">
+               BuildableName = "ExpenseTrackerTests.xctest"
+               BlueprintName = "ExpenseTrackerTests"
+               ReferencedContainer = "container:ExpenseTracker.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "UpiTracker.app"
-            BlueprintName = "UpiTracker"
-            ReferencedContainer = "container:UpiTracker.xcodeproj">
+            BuildableName = "ExpenseTracker.app"
+            BlueprintName = "ExpenseTracker"
+            ReferencedContainer = "container:ExpenseTracker.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "UpiTracker.app"
-            BlueprintName = "UpiTracker"
-            ReferencedContainer = "container:UpiTracker.xcodeproj">
+            BuildableName = "ExpenseTracker.app"
+            BlueprintName = "ExpenseTracker"
+            ReferencedContainer = "container:ExpenseTracker.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

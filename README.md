@@ -130,9 +130,3 @@ Every dependency is pinned to an exact version. Checked for network code:
 | `react-native-biometrics` | No |
 | `react-native-safe-area-context` | No |
 | `babel-plugin-transform-remove-console` | Build-time only |
-
-## About the name
-
-The app is called **Expense Tracker** for now. Its internal IDs still say `UpiTracker` /
-`com.upitracker` (Android package, JS component name, database and keychain names). They are never
-shown to users; change them together when the final name is chosen.

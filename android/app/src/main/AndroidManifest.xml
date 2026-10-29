@@ -32,7 +32,7 @@
 
       <!-- Live bank SMS. Only the system (BROADCAST_SMS holder) can send to it. -->
       <receiver
-        android:name="com.upitracker.sms.SmsReceiver"
+        android:name="com.expensetracker.sms.SmsReceiver"
         android:permission="android.permission.BROADCAST_SMS"
         android:exported="true">
         <intent-filter>
@@ -41,7 +41,7 @@
       </receiver>
 
       <service
-        android:name="com.upitracker.sms.SmsHeadlessService"
+        android:name="com.expensetracker.sms.SmsHeadlessService"
         android:exported="false" />
     </application>
 </manifest>

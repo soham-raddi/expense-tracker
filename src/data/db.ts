@@ -17,7 +17,7 @@ export function getDb(): Promise<DB> {
 
 async function openDb(): Promise<DB> {
   const encryptionKey = await getOrCreateDbKey();
-  const db = open({ name: 'upitracker.db', encryptionKey });
+  const db = open({ name: 'expensetracker.db', encryptionKey });
   await db.execute('PRAGMA foreign_keys = ON');
   await migrate(db);
   await recategorizeUncategorized(db);

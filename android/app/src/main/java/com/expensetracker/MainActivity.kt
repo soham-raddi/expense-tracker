@@ -1,4 +1,4 @@
-package com.upitracker
+package com.expensetracker
 
 import android.content.pm.ApplicationInfo
 import android.os.Bundle
@@ -14,7 +14,7 @@ class MainActivity : ReactActivity() {
    * Returns the name of the main component registered from JavaScript. This is used to schedule
    * rendering of the component.
    */
-  override fun getMainComponentName(): String = "UpiTracker"
+  override fun getMainComponentName(): String = "ExpenseTracker"
 
   override fun onCreate(savedInstanceState: Bundle?) {
     // Hide app content in the recent-apps screen and block screenshots. Skipped only for debug

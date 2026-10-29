@@ -1,4 +1,4 @@
-package com.upitracker.sms
+package com.expensetracker.sms
 
 import android.provider.Telephony
 import com.facebook.react.bridge.Arguments

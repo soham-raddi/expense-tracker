@@ -30,7 +30,7 @@ class SceneDelegate: RCTDefaultReactNativeFactoryDelegate, UIWindowSceneDelegate
     #endif
     
     reactNativeFactory?.startReactNative(
-      withModuleName: "UpiTracker",
+      withModuleName: "ExpenseTracker",
       in: window,
       connectionOptions: connectionOptions
     )

@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, StyleSheet, Text, View } from 'react-native';
 import ReactNativeBiometrics from 'react-native-biometrics';
+import { isLockSuspended } from '../../lib/lockGuard';
 import { Button } from '../components/Button';
 import { radius, space, usePalette } from '../theme';
 
@@ -47,7 +48,7 @@ export function AppLock({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     unlock();
     const sub = AppState.addEventListener('change', state => {
-      if (prompting.current || Date.now() - promptEndedAt.current < PROMPT_SETTLE_MS) {
+      if (prompting.current || isLockSuspended() || Date.now() - promptEndedAt.current < PROMPT_SETTLE_MS) {
         return;
       }
       if (state === 'background') {

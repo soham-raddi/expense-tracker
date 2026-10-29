@@ -77,14 +77,14 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.upitracker"
+    namespace "com.expensetracker"
 
     // Our own native modules live outside android/ in native/android (see README).
     sourceSets {
         main.java.srcDirs += "$rootDir/../native/android/src/main/java"
     }
     defaultConfig {
-        applicationId "com.upitracker"
+        applicationId "com.expensetracker"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

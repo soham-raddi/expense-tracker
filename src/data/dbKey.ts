@@ -4,7 +4,7 @@
 import { NativeModules } from 'react-native';
 import * as Keychain from 'react-native-keychain';
 
-const SERVICE = 'upitracker.db-key';
+const SERVICE = 'expensetracker.db-key';
 
 export async function getOrCreateDbKey(): Promise<string> {
   const existing = await Keychain.getGenericPassword({ service: SERVICE });
