@@ -10,16 +10,16 @@ import {
   USER_RULE_PRIORITY,
   type Category,
   type RuleRow,
-} from '../data/categoriesRepo';
-import { recategorizeUncategorized } from '../data/categorizeRepo';
-import { getDb } from '../data/db';
-import type { RuleField } from '../data/types';
-import { emitDataChanged } from '../ingest/events';
-import { Button } from './components/Button';
-import { Dot, Segmented } from './components/GroupBits';
-import { GroupPickerModal } from './components/GroupPickerModal';
-import { ScreenHeader } from './components/ScreenHeader';
-import { radius, space, usePalette } from './theme';
+} from '../../data/repos/categoriesRepo';
+import { recategorizeUncategorized } from '../../data/repos/categorizeRepo';
+import { getDb } from '../../data/db';
+import type { RuleField } from '../../data/types';
+import { emitDataChanged } from '../../lib/events';
+import { Button } from '../components/Button';
+import { Dot, Segmented } from '../components/GroupBits';
+import { GroupPickerModal } from '../components/GroupPickerModal';
+import { ScreenHeader } from '../components/ScreenHeader';
+import { radius, space, usePalette } from '../theme';
 
 const FIELD_LABEL: Record<RuleField, string> = {
   PAYEE_NAME: 'name has',

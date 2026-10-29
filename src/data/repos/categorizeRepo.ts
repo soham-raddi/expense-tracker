@@ -1,9 +1,9 @@
 // Connects the categorizer chain to the database.
 
 import type { DB } from '@op-engineering/op-sqlite';
-import { runChain, type ChainOutcome } from '../categorize/chain';
-import type { CategorizeContext, CategorizeInput, Rule } from '../categorize/types';
-import type { Direction, RuleField } from './types';
+import { runChain, type ChainOutcome } from '../../categorize/chain';
+import type { CategorizeContext, CategorizeInput, Rule } from '../../categorize/types';
+import type { Direction, RuleField } from '../types';
 
 export async function loadContext(db: DB): Promise<CategorizeContext> {
   const rules = await db.execute('SELECT id, match_field, pattern, category_id, priority FROM rules');

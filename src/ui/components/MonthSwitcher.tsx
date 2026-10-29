@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { addMonths, monthLabel, sameMonth, type MonthRef } from '../format';
+import { addMonths, monthLabel, sameMonth, type MonthRef } from '../../lib/format';
 import { radius, space, usePalette } from '../theme';
 
 interface Props {

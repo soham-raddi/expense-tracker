@@ -64,14 +64,22 @@ emulator's Extended controls → Phone → SMS, with sender e.g. `VM-ICICIT` and
 ## Project layout
 
 ```
+index.js          app entry (registers the app and the background SMS task)
 src/
-  config/      categories, seed rules, bank sender codes, SMS filters (edit these, not code)
-  data/        types, SQLite schema, encrypted DB, repositories
-  ingest/      SMS routing, OTP/promo filters, bank parsers (src/ingest/banks/)
-  ui/          screens
-native/android Kotlin modules: SMS inbox reader, live SMS receiver, secure random
-fixtures/sms/  SYNTHETIC test SMS per bank
+  App.tsx         tab navigation and the lock gate
+  config/         categories, seed rules, bank sender codes, SMS filters (edit these, not code)
+  lib/            plain helpers shared everywhere: money/date formatting, change events
+  data/           types, SQLite schema, encrypted DB, totals, repos/ (database queries)
+  ingest/         SMS routing, OTP/promo filters, bank parsers (banks/), statement matching
+  categorize/     the group-sorting chain: payee memory, keyword rules, income
+  ui/             theme, components/ (reusable pieces), screens/ (one per screen)
+native/android/   Kotlin modules: SMS inbox reader, live SMS receiver, secure random
+fixtures/sms/     SYNTHETIC test SMS per bank
+android/, ios/    the React Native platform projects (generated, lightly edited)
 ```
+
+Tests live next to the code in `__tests__/` folders. `src/lib`, `src/categorize` and the
+parsers import nothing from React Native, so they run anywhere (including a future web viewer).
 
 ## How an SMS becomes a transaction
 

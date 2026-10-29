@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import type { TxnRow } from '../../data/transactionsRepo';
-import { formatRupees, initials, modeLabel, timeLabel } from '../format';
+import type { TxnRow } from '../../data/repos/transactionsRepo';
+import { formatRupees, initials, modeLabel, timeLabel } from '../../lib/format';
 import { radius, space, usePalette } from '../theme';
 import { GroupChip } from './GroupBits';
 

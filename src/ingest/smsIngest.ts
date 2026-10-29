@@ -1,10 +1,10 @@
 // Turns raw SMS into stored transactions (or Unparsed entries).
 
 import { getDb } from '../data/db';
-import { insertSmsTxn, insertUnparsed } from '../data/transactionsRepo';
+import { insertSmsTxn, insertUnparsed } from '../data/repos/transactionsRepo';
 import type { RawSms } from '../data/types';
 import { routeSms } from './registry';
-import { emitDataChanged } from './events';
+import { emitDataChanged } from '../lib/events';
 import { readInbox } from './smsNative';
 
 export type IngestOutcome = 'saved' | 'duplicate' | 'unparsed' | 'ignored';

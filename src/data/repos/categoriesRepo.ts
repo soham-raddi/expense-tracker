@@ -1,7 +1,7 @@
 // Your groups (categories) and keyword rules.
 
 import type { DB } from '@op-engineering/op-sqlite';
-import type { RuleField } from './types';
+import type { RuleField } from '../types';
 
 export interface Category {
   id: number;

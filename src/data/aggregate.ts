@@ -1,7 +1,7 @@
 // Totals by month and by group. Pure functions, so they are easy to test.
 // Money moved between your own accounts (groups marked "exclude from totals") is left out.
 
-import { addMonths, monthOf, sameMonth, type MonthRef } from '../ui/format';
+import { addMonths, monthOf, sameMonth, type MonthRef } from '../lib/format';
 
 export interface LiteTxn {
   timestamp: number;

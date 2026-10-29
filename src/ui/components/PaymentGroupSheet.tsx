@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Switch, Text, View } from 'react-native';
-import type { Category } from '../../data/categoriesRepo';
-import type { TxnRow } from '../../data/transactionsRepo';
-import { formatRupees } from '../format';
+import type { Category } from '../../data/repos/categoriesRepo';
+import type { TxnRow } from '../../data/repos/transactionsRepo';
+import { formatRupees } from '../../lib/format';
 import { space, usePalette } from '../theme';
 import { Button } from './Button';
 import { GroupPickerModal } from './GroupPickerModal';

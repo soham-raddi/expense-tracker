@@ -9,14 +9,14 @@ import {
   listCategories,
   updateCategory,
   type Category,
-} from '../data/categoriesRepo';
-import { recategorizeUncategorized } from '../data/categorizeRepo';
-import { getDb } from '../data/db';
-import { emitDataChanged } from '../ingest/events';
-import { Button } from './components/Button';
-import { ColourPicker, Dot, GROUP_COLOURS } from './components/GroupBits';
-import { ScreenHeader } from './components/ScreenHeader';
-import { radius, space, usePalette } from './theme';
+} from '../../data/repos/categoriesRepo';
+import { recategorizeUncategorized } from '../../data/repos/categorizeRepo';
+import { getDb } from '../../data/db';
+import { emitDataChanged } from '../../lib/events';
+import { Button } from '../components/Button';
+import { ColourPicker, Dot, GROUP_COLOURS } from '../components/GroupBits';
+import { ScreenHeader } from '../components/ScreenHeader';
+import { radius, space, usePalette } from '../theme';
 
 interface Editing {
   id: number | null; // null = new group

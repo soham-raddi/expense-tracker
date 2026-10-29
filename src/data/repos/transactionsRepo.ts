@@ -2,8 +2,8 @@
 
 import type { DB } from '@op-engineering/op-sqlite';
 import { categorize, loadContext } from './categorizeRepo';
-import type { LiteTxn } from './aggregate';
-import type { ParsedTxn, RawSms } from './types';
+import type { LiteTxn } from '../aggregate';
+import type { ParsedTxn, RawSms } from '../types';
 
 // The same SMS can be seen twice (live, then in the inbox scan) with times a little apart.
 const SAME_SMS_WINDOW_MS = 10 * 60 * 1000;

@@ -2,21 +2,21 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, RefreshControl, ScrollView, SectionList, StyleSheet, Text, View } from 'react-native';
-import { totalsOf } from '../data/aggregate';
-import { listCategories, type Category } from '../data/categoriesRepo';
-import { clearCategory, setAlwaysAsk, setUserCategory } from '../data/categorizeRepo';
-import { getDb } from '../data/db';
-import { transactionsBetween, type TxnRow } from '../data/transactionsRepo';
-import { groupBreakdown } from '../data/aggregate';
-import { emitDataChanged, onDataChanged } from '../ingest/events';
-import { Dot, Segmented } from './components/GroupBits';
-import { EmptyState } from './components/EmptyState';
-import { MonthSwitcher } from './components/MonthSwitcher';
-import { PaymentGroupSheet } from './components/PaymentGroupSheet';
-import { SummaryCard } from './components/SummaryCard';
-import { TransactionItem } from './components/TransactionItem';
-import { formatRupees, groupByDay, monthBounds, monthOf, sameMonth, type MonthRef } from './format';
-import { radius, space, usePalette } from './theme';
+import { totalsOf } from '../../data/aggregate';
+import { listCategories, type Category } from '../../data/repos/categoriesRepo';
+import { clearCategory, setAlwaysAsk, setUserCategory } from '../../data/repos/categorizeRepo';
+import { getDb } from '../../data/db';
+import { transactionsBetween, type TxnRow } from '../../data/repos/transactionsRepo';
+import { groupBreakdown } from '../../data/aggregate';
+import { emitDataChanged, onDataChanged } from '../../lib/events';
+import { Dot, Segmented } from '../components/GroupBits';
+import { EmptyState } from '../components/EmptyState';
+import { MonthSwitcher } from '../components/MonthSwitcher';
+import { PaymentGroupSheet } from '../components/PaymentGroupSheet';
+import { SummaryCard } from '../components/SummaryCard';
+import { TransactionItem } from '../components/TransactionItem';
+import { formatRupees, groupByDay, monthBounds, monthOf, sameMonth, type MonthRef } from '../../lib/format';
+import { radius, space, usePalette } from '../theme';
 
 type View_ = 'timeline' | 'groups';
 type GroupFilter = { id: number | null; name: string } | null; // id null = payments with no group

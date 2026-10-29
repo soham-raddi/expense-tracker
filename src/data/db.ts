@@ -3,7 +3,7 @@
 import { open, type DB } from '@op-engineering/op-sqlite';
 import { getOrCreateDbKey } from './dbKey';
 import { MIGRATIONS } from './schema';
-import { recategorizeUncategorized } from './categorizeRepo';
+import { recategorizeUncategorized } from './repos/categorizeRepo';
 import { seedDefaults, seedRulesV2 } from './seed';
 
 let dbPromise: Promise<DB> | null = null;

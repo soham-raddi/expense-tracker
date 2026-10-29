@@ -3,8 +3,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, StyleSheet, Text, View } from 'react-native';
 import ReactNativeBiometrics from 'react-native-biometrics';
-import { Button } from './components/Button';
-import { radius, space, usePalette } from './theme';
+import { Button } from '../components/Button';
+import { radius, space, usePalette } from '../theme';
 
 const biometrics = new ReactNativeBiometrics({ allowDeviceCredentials: true });
 

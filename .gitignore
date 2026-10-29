@@ -1,78 +1,45 @@
-# OSX
-#
-.DS_Store
-
-# Xcode
-#
-build/
-*.pbxuser
-!default.pbxuser
-*.mode1v3
-!default.mode1v3
-*.mode2v3
-!default.mode2v3
-*.perspectivev3
-!default.perspectivev3
-xcuserdata
-*.xccheckout
-*.moved-aside
-DerivedData
-*.hmap
-*.ipa
-*.xcuserstate
-**/.xcode.env.local
-
-# Android/IntelliJ
-#
-build/
-.idea
-.gradle
-local.properties
-*.iml
-*.hprof
-.cxx/
-*.keystore
-!debug.keystore
-.kotlin/
-
-# node.js
-#
+# Dependencies
 node_modules/
-npm-debug.log
-yarn-error.log
+/vendor/bundle/
+**/Pods/
 
-# fastlane
-#
-# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
-# screenshots whenever they are needed.
-# For more information about the recommended setup visit:
-# https://docs.fastlane.tools/best-practices/source-control/
-
-**/fastlane/report.xml
-**/fastlane/Preview.html
-**/fastlane/screenshots
-**/fastlane/test_output
-
-# Bundle artifact
+# Build output
+build/
+.cxx/
+.gradle/
+.kotlin/
+DerivedData/
+*.apk
+*.aab
+*.ipa
 *.jsbundle
 
-# Ruby / CocoaPods
-**/Pods/
-/vendor/bundle/
-
-# Temporary files created by Metro to check the health of the file watcher
+# Local machine settings and editor files
+local.properties
+.idea/
+.vscode/
+*.iml
+.DS_Store
+xcuserdata/
+*.xcuserstate
+**/.xcode.env.local
 .metro-health-check*
 
-# testing
-/coverage
+# Logs and test output
+*.log
+*.hprof
+/coverage/
 
-# Yarn
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
+# Tooling that is personal to each developer
+.claude/
+
+# Signing keys and secrets (the public RN debug.keystore is kept on purpose)
+*.keystore
+!debug.keystore
+*.jks
+keystore.properties
+.env
+.env.*
 
 # Never commit real financial data or databases
 *.db
@@ -81,7 +48,3 @@ yarn-error.log
 *.sqlite3
 real-data/
 statements/
-
-# Signing secrets
-*.jks
-keystore.properties

@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { formatRupees } from '../format';
+import { formatRupees } from '../../lib/format';
 import { radius, space, usePalette } from '../theme';
 
 interface Props {

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import type { Category } from '../../data/categoriesRepo';
+import type { Category } from '../../data/repos/categoriesRepo';
 import { radius, space, usePalette } from '../theme';
 import { Dot } from './GroupBits';
 

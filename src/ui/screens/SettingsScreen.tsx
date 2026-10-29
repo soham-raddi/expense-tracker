@@ -2,10 +2,10 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { importInbox } from '../ingest/smsIngest';
-import { hasSmsPermission, requestSmsPermission, syncSenderCodes } from '../ingest/smsNative';
-import { Button } from './components/Button';
-import { radius, space, usePalette } from './theme';
+import { importInbox } from '../../ingest/smsIngest';
+import { hasSmsPermission, requestSmsPermission, syncSenderCodes } from '../../ingest/smsNative';
+import { Button } from '../components/Button';
+import { radius, space, usePalette } from '../theme';
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   const c = usePalette();
