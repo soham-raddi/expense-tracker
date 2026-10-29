@@ -8,14 +8,25 @@ import { radius, space, usePalette } from './theme';
 
 const biometrics = new ReactNativeBiometrics({ allowDeviceCredentials: true });
 
+// The system prompt makes Android report the app as inactive and then active again. Those events
+// come from the prompt itself and must not lock the app or start a second prompt.
+const PROMPT_SETTLE_MS = 1500;
+
 export function AppLock({ children }: { children: React.ReactNode }) {
   const c = usePalette();
-  const [unlocked, setUnlocked] = useState(false);
+  const [unlocked, setUnlockedState] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const unlockedRef = useRef(false);
   const prompting = useRef(false);
+  const promptEndedAt = useRef(0);
+
+  const setUnlocked = useCallback((value: boolean) => {
+    unlockedRef.current = value;
+    setUnlockedState(value);
+  }, []);
 
   const unlock = useCallback(async () => {
-    if (prompting.current) {
+    if (prompting.current || unlockedRef.current) {
       return;
     }
     prompting.current = true;
@@ -29,12 +40,16 @@ export function AppLock({ children }: { children: React.ReactNode }) {
       setError('Set up a screen lock (PIN, pattern or fingerprint) on this phone to use the app.');
     } finally {
       prompting.current = false;
+      promptEndedAt.current = Date.now();
     }
-  }, []);
+  }, [setUnlocked]);
 
   useEffect(() => {
     unlock();
     const sub = AppState.addEventListener('change', state => {
+      if (prompting.current || Date.now() - promptEndedAt.current < PROMPT_SETTLE_MS) {
+        return;
+      }
       if (state === 'background') {
         setUnlocked(false);
       } else if (state === 'active') {
@@ -42,7 +57,7 @@ export function AppLock({ children }: { children: React.ReactNode }) {
       }
     });
     return () => sub.remove();
-  }, [unlock]);
+  }, [unlock, setUnlocked]);
 
   if (unlocked) {
     return <>{children}</>;
