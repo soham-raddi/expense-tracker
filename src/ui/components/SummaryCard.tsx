@@ -7,14 +7,15 @@ interface Props {
   spentPaise: number;
   receivedPaise: number;
   count: number;
+  caption?: string;
 }
 
-export function SummaryCard({ spentPaise, receivedPaise, count }: Props) {
+export function SummaryCard({ spentPaise, receivedPaise, count, caption = 'Spent this month' }: Props) {
   const c = usePalette();
   const net = receivedPaise - spentPaise;
   return (
     <View style={[styles.card, { backgroundColor: c.accent }]}>
-      <Text style={[styles.caption, { color: c.onAccent }]}>Spent this month</Text>
+      <Text style={[styles.caption, { color: c.onAccent }]}>{caption}</Text>
       <Text style={[styles.big, { color: c.onAccent }]} accessibilityLabel={`Spent ${formatRupees(spentPaise)}`}>
         {formatRupees(spentPaise, false)}
       </Text>

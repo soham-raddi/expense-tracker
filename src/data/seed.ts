@@ -51,3 +51,21 @@ export async function seedRulesV2(tx: Transaction): Promise<void> {
     }
   }
 }
+
+/**
+ * Migration 7: "Friends / Splits" becomes "Friends" (people you know), and "Other people" is added
+ * for people you pay only once or twice. A name you already changed is left alone.
+ */
+export async function refineGroups(tx: Transaction): Promise<void> {
+  await tx.execute(
+    `UPDATE categories SET name = 'Friends'
+     WHERE name = 'Friends / Splits' AND is_default = 1
+       AND NOT EXISTS (SELECT 1 FROM categories WHERE name = 'Friends')`,
+  );
+  const existing = await tx.execute("SELECT id FROM categories WHERE name = 'Other people'");
+  if (existing.rows.length === 0) {
+    await tx.execute(
+      "INSERT INTO categories (name, icon, colour, is_default) VALUES ('Other people', 'users', '#8E6BBF', 1)",
+    );
+  }
+}

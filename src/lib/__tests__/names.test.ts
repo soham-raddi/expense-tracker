@@ -1,4 +1,4 @@
-import { cleanCustomName, matchText, shownName } from '../names';
+import { cleanCustomName, cleanNote, matchText, shownName } from '../names';
 
 describe('shownName', () => {
   test('your name wins, otherwise the bank name', () => {
@@ -23,5 +23,14 @@ describe('cleanCustomName', () => {
     expect(cleanCustomName('  Priya   Rao ')).toBe('Priya Rao');
     expect(cleanCustomName('   ')).toBeNull();
     expect(cleanCustomName('x'.repeat(100))).toHaveLength(40);
+  });
+});
+
+describe('cleanNote', () => {
+  test('trims, keeps line breaks, limits length and treats blank as no note', () => {
+    expect(cleanNote('  lunch   with  Priya ')).toBe('lunch with Priya');
+    expect(cleanNote('line one' + String.fromCharCode(10) + 'line two')).toBe('line one' + String.fromCharCode(10) + 'line two');
+    expect(cleanNote(' ' + String.fromCharCode(10) + ' ')).toBeNull();
+    expect(cleanNote('x'.repeat(500))).toHaveLength(200);
   });
 });

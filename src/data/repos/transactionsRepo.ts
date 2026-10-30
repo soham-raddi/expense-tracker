@@ -137,6 +137,7 @@ export interface TxnRow {
   upiRef: string | null;
   maskedAccount: string | null;
   balancePaise: number | null;
+  note: string | null; // your own note on the payment
   rawText: string;
   source: 'SMS' | 'STATEMENT' | 'BOTH';
   categoryId: number | null;
@@ -146,7 +147,7 @@ export interface TxnRow {
 }
 
 const TXN_SELECT = `SELECT t.id, t.amount_paise, t.direction, t.timestamp, t.mode, t.upi_ref, t.masked_account,
-    t.payee_id, p.display_name, p.custom_name, p.always_ask, t.balance_paise, t.raw_text, t.source, t.category_id, c.name AS category_name,
+    t.payee_id, p.display_name, p.custom_name, p.always_ask, t.balance_paise, t.note, t.raw_text, t.source, t.category_id, c.name AS category_name,
     c.colour AS category_colour, COALESCE(c.exclude_from_totals, 0) AS excluded
   FROM transactions t
   LEFT JOIN payees p ON p.id = t.payee_id
@@ -175,6 +176,7 @@ export async function transactionsBetween(db: DB, from: number, to: number): Pro
     upiRef: r.upi_ref == null ? null : String(r.upi_ref),
     maskedAccount: r.masked_account == null ? null : String(r.masked_account),
     balancePaise: r.balance_paise == null ? null : Number(r.balance_paise),
+    note: r.note == null ? null : String(r.note),
     rawText: String(r.raw_text),
     source: r.source === 'STATEMENT' || r.source === 'BOTH' ? r.source : 'SMS',
     categoryId: r.category_id == null ? null : Number(r.category_id),
@@ -182,6 +184,11 @@ export async function transactionsBetween(db: DB, from: number, to: number): Pro
     categoryColour: r.category_colour == null ? null : String(r.category_colour),
     excluded: Number(r.excluded) === 1,
   }));
+}
+
+/** Your own note on a payment; null removes it. */
+export async function setTransactionNote(db: DB, id: number, note: string | null): Promise<void> {
+  await db.execute('UPDATE transactions SET note = ? WHERE id = ?', [note, id]);
 }
 
 /** Every transaction, only the fields needed to total up months. */

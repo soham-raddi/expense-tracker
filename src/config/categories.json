@@ -10,7 +10,8 @@
   { "name": "Entertainment", "icon": "film", "colour": "#7B2CBF" },
   { "name": "Subscriptions", "icon": "repeat", "colour": "#1B998B" },
   { "name": "Family", "icon": "users", "colour": "#F49D37" },
-  { "name": "Friends / Splits", "icon": "user-plus", "colour": "#3BB273" },
+  { "name": "Friends", "icon": "user-plus", "colour": "#3BB273" },
+  { "name": "Other people", "icon": "users", "colour": "#8E6BBF" },
   { "name": "Transfers (self)", "icon": "swap", "colour": "#8D99AE" },
   { "name": "Income", "icon": "arrow-down", "colour": "#2A9D8F" },
   { "name": "Other", "icon": "dots", "colour": "#6C757D" }

@@ -42,7 +42,7 @@ const SECTIONS: Section[] = [
     points: [
       'It reads text messages only from your bank\'s sender names. Everything else is dropped before the app sees it.',
       'One-time passwords (OTPs) are ignored and never saved.',
-      'For each bank payment message it saves the amount, date, who it was with, the last digits of your account, the reference, the balance if shown, and the full original text. The text is kept exactly as the bank sent it, so anything the bank put in it is kept too.',
+      'For each bank payment message it saves the amount, date, who it was with, the last digits of your account, the reference, the balance if shown, and the full original text. The text is kept exactly as the bank sent it, so anything the bank put in it is kept too. Notes you write on a payment, and names you give a payee, are stored with it.',
       'Messages you dismissed from the Unparsed tab are hidden, not erased, so they do not come back. They are removed by Delete all data.',
       'Message text is never written to logs.',
     ],

@@ -4,7 +4,7 @@ import { open, type DB } from '@op-engineering/op-sqlite';
 import { getOrCreateDbKey } from './dbKey';
 import { MIGRATIONS } from './schema';
 import { recategorizeUncategorized } from './repos/categorizeRepo';
-import { seedDefaults, seedRulesV2 } from './seed';
+import { refineGroups, seedDefaults, seedRulesV2 } from './seed';
 
 let dbPromise: Promise<DB> | null = null;
 
@@ -39,6 +39,9 @@ async function migrate(db: DB): Promise<void> {
       }
       if (v === 2) {
         await seedRulesV2(tx);
+      }
+      if (v === 6) {
+        await refineGroups(tx);
       }
       await tx.execute(`PRAGMA user_version = ${v + 1}`);
     });

@@ -76,17 +76,20 @@ export interface GroupSlice {
   categoryId: number | null; // null = not in any group yet
   name: string;
   colour: string | null;
-  spentPaise: number;
+  totalPaise: number; // money spent, or money received, depending on the direction asked for
   count: number;
-  share: number; // 0-1 of the month's spending
+  share: number; // 0-1 of all money in that direction
 }
 
-/** Spending per group, biggest first. Payments without a group are one "Uncategorized" slice. */
-export function groupBreakdown(rows: BreakdownRow[]): GroupSlice[] {
+/**
+ * Money spent (DEBIT) or received (CREDIT) per group, biggest first. Payments without a group are
+ * one "Uncategorized" slice.
+ */
+export function groupBreakdown(rows: BreakdownRow[], direction: 'DEBIT' | 'CREDIT' = 'DEBIT'): GroupSlice[] {
   const slices = new Map<number | null, GroupSlice>();
   let total = 0;
   for (const r of rows) {
-    if (r.excluded || r.direction !== 'DEBIT') {
+    if (r.excluded || r.direction !== direction) {
       continue;
     }
     total += r.amountPaise;
@@ -94,15 +97,15 @@ export function groupBreakdown(rows: BreakdownRow[]): GroupSlice[] {
       categoryId: r.categoryId,
       name: r.categoryName ?? 'Uncategorized',
       colour: r.categoryColour,
-      spentPaise: 0,
+      totalPaise: 0,
       count: 0,
       share: 0,
     };
-    slice.spentPaise += r.amountPaise;
+    slice.totalPaise += r.amountPaise;
     slice.count++;
     slices.set(r.categoryId, slice);
   }
   return [...slices.values()]
-    .map(s => ({ ...s, share: total === 0 ? 0 : s.spentPaise / total }))
-    .sort((a, b) => b.spentPaise - a.spentPaise);
+    .map(s => ({ ...s, share: total === 0 ? 0 : s.totalPaise / total }))
+    .sort((a, b) => b.totalPaise - a.totalPaise);
 }

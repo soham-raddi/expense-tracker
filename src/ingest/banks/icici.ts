@@ -26,10 +26,11 @@ const FORMATS: Format[] = [
     mode: 'UPI',
   },
   // Rs 89.00 debited from ICICI Bank Savings Account XX123 on 26-Oct-26 towards NAME for UPI Mandate AutoPay Retrieval Ref No.123456789012
-  // (the mandate kind varies: "UPI Mandate", "Create Mandate", ...)
+  // (the mandate kind varies: "UPI Mandate", "Create Mandate", "MERCHANTMANDATE" in capitals, ...)
   {
     regex: new RegExp(
-      String.raw`${AMOUNT} debited from ICICI Bank \w+ Account ${ACCT} on ${DATE} towards (?<payee>.+?) for (?:\w+ )*?Mandate AutoPay Retrieval Ref No\.?\s?(?<ref>\d+)`,
+      String.raw`${AMOUNT} debited from ICICI Bank \w+ Account ${ACCT} on ${DATE} towards (?<payee>.+?) for (?:\w+ )*?\w*Mandate AutoPay Retrieval Ref No\.?\s?(?<ref>\d+)`,
+      'i',
     ),
     direction: 'DEBIT',
     mode: 'AUTOPAY',

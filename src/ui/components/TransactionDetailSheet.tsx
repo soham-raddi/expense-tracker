@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Alert, KeyboardAvoidingView, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import type { TxnRow } from '../../data/repos/transactionsRepo';
 import { dateTimeLabel, formatRupees, initials, modeLabel } from '../../lib/format';
-import { cleanCustomName } from '../../lib/names';
+import { cleanCustomName, cleanNote } from '../../lib/names';
 import { radius, space, usePalette } from '../theme';
 import { Button } from './Button';
 import { GroupChip } from './GroupBits';
@@ -15,6 +15,7 @@ interface Props {
   onClose: () => void;
   onChangeGroup: (txn: TxnRow) => void;
   onRename: (txn: TxnRow, name: string | null) => void;
+  onSaveNote: (txn: TxnRow, note: string | null) => void;
   onDelete: (txn: TxnRow) => void;
 }
 
@@ -24,9 +25,11 @@ const SOURCE_LABEL: Record<TxnRow['source'], string> = {
   BOTH: 'Bank SMS and statement',
 };
 
-export function TransactionDetailSheet({ txn, onClose, onChangeGroup, onRename, onDelete }: Props) {
+export function TransactionDetailSheet({ txn, onClose, onChangeGroup, onRename, onSaveNote, onDelete }: Props) {
   const c = usePalette();
   const [draft, setDraft] = useState('');
+  const [noteDraft, setNoteDraft] = useState('');
+  const noteY = useRef(0);
   const scrollRef = useRef<React.ComponentRef<typeof ScrollView>>(null);
   const renameY = useRef(0);
 
@@ -34,8 +37,20 @@ export function TransactionDetailSheet({ txn, onClose, onChangeGroup, onRename, 
     setDraft(txn?.payeeCustomName ?? '');
   }, [txn?.id, txn?.payeeCustomName]);
 
+  useEffect(() => {
+    setNoteDraft(txn?.note ?? '');
+  }, [txn?.id, txn?.note]);
+
   const isDebit = txn?.direction === 'DEBIT';
   const changed = (cleanCustomName(draft) ?? '') !== (txn?.payeeCustomName ?? '');
+
+  const noteChanged = (cleanNote(noteDraft) ?? '') !== (txn?.note ?? '');
+
+  const saveNote = () => {
+    if (txn && noteChanged) {
+      onSaveNote(txn, cleanNote(noteDraft));
+    }
+  };
 
   const save = () => {
     if (txn && changed) {
@@ -57,9 +72,12 @@ export function TransactionDetailSheet({ txn, onClose, onChangeGroup, onRename, 
     );
   };
 
-  // The keyboard covers the lower part of the sheet; bring the name box and its button into view.
+  // The keyboard covers the lower part of the sheet; bring the box being edited into view.
   const showRename = () => {
     setTimeout(() => scrollRef.current?.scrollTo({ y: renameY.current, animated: true }), 300);
+  };
+  const showNote = () => {
+    setTimeout(() => scrollRef.current?.scrollTo({ y: noteY.current, animated: true }), 300);
   };
 
   const rows: [string, string | null][] = txn
@@ -126,6 +144,29 @@ export function TransactionDetailSheet({ txn, onClose, onChangeGroup, onRename, 
                       </Text>
                     </View>
                   ))}
+              </View>
+
+              <View style={styles.rename} onLayout={e => (noteY.current = e.nativeEvent.layout.y)}>
+                <Text style={[styles.sectionTitle, { color: c.text }]}>Your note</Text>
+                <TextInput
+                  value={noteDraft}
+                  onChangeText={setNoteDraft}
+                  placeholder="Add a note, e.g. lunch with Priya"
+                  placeholderTextColor={c.textMuted}
+                  maxLength={200}
+                  multiline
+                  onFocus={showNote}
+                  style={[styles.input, styles.noteInput, { color: c.text, backgroundColor: c.cardAlt, borderColor: c.border }]}
+                />
+                <View style={styles.actions}>
+                  <View style={styles.flex}>
+                    <Button
+                      label={cleanNote(noteDraft) ? 'Save note' : 'Remove note'}
+                      onPress={saveNote}
+                      disabled={!noteChanged}
+                    />
+                  </View>
+                </View>
               </View>
 
               {txn.payeeId != null && (
@@ -212,5 +253,6 @@ const styles = StyleSheet.create({
   actions: { flexDirection: 'row', gap: space.md, marginTop: space.xs },
   message: { borderRadius: radius.md, padding: space.lg, marginTop: space.sm },
   messageText: { fontSize: 14, lineHeight: 21 },
+  noteInput: { minHeight: 76, textAlignVertical: 'top' },
   deleteRow: { marginTop: space.xl },
 });

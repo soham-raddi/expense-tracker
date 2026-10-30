@@ -244,6 +244,23 @@
       "expect": {
         "kind": "ignored"
       }
+    },
+    {
+      "name": "AutoPay debit where the bank writes MERCHANTMANDATE as one capitalised word",
+      "sender": "VM-ICICIT",
+      "receivedAt": "2026-10-03T07:00:00+05:30",
+      "body": "Rs 149.00 debited from ICICI Bank Savings Account XX123 on 03-Oct-26 towards TEST MUSIC L for MERCHANTMANDATE AutoPay Retrieval Ref No.512345678955",
+      "expect": {
+        "kind": "txn",
+        "txn": {
+          "amountPaise": 14900,
+          "direction": "DEBIT",
+          "mode": "AUTOPAY",
+          "payeeName": "TEST MUSIC L",
+          "upiRef": "512345678955",
+          "maskedAccount": "XX123"
+        }
+      }
     }
   ]
 }

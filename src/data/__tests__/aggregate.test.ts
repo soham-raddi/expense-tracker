@@ -81,7 +81,7 @@ describe('groupBreakdown', () => {
       row(10000, null, null),
     ]);
     expect(slices.map(s => s.name)).toEqual(['Shopping', 'Food & Dining', 'Uncategorized']);
-    expect(slices[1]).toMatchObject({ spentPaise: 40000, count: 2 });
+    expect(slices[1]).toMatchObject({ totalPaise: 40000, count: 2 });
     expect(slices[0].share).toBeCloseTo(60000 / 110000);
     expect(slices.reduce((a, s) => a + s.share, 0)).toBeCloseTo(1);
   });
@@ -94,6 +94,21 @@ describe('groupBreakdown', () => {
     ]);
     expect(slices).toHaveLength(1);
     expect(slices[0].share).toBe(1);
+  });
+
+  test('can split money received by group, so income can be told apart from friends', () => {
+    const slices = groupBreakdown(
+      [
+        row(2000000, 3, 'Income', { direction: 'CREDIT' }),
+        row(50000, 5, 'Friends', { direction: 'CREDIT' }),
+        row(30000, 5, 'Friends', { direction: 'CREDIT' }),
+        row(99999, 1, 'Food & Dining'), // a debit, ignored when asking for credits
+      ],
+      'CREDIT',
+    );
+    expect(slices.map(s => s.name)).toEqual(['Income', 'Friends']);
+    expect(slices[1]).toMatchObject({ totalPaise: 80000, count: 2 });
+    expect(slices[0].share).toBeCloseTo(2000000 / 2080000);
   });
 
   test('no spending gives no slices', () => {

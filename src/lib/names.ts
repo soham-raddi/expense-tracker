@@ -17,3 +17,9 @@ export function cleanCustomName(input: string): string | null {
   const name = input.trim().replace(/\s+/g, ' ');
   return name === '' ? null : name.slice(0, 40);
 }
+
+/** A note you write on a payment. Blank means "no note". */
+export function cleanNote(input: string): string | null {
+  const note = input.trim().replace(/[ \t]+/g, ' ');
+  return note === '' ? null : note.slice(0, 200);
+}

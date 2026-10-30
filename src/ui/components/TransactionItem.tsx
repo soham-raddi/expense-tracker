@@ -27,6 +27,11 @@ export function TransactionItem({ txn, onPress }: { txn: TxnRow; onPress: () => 
         <Text style={[styles.meta, { color: c.textMuted }]} numberOfLines={1}>
           {meta}
         </Text>
+        {txn.note ? (
+          <Text style={[styles.note, { color: c.textMuted }]} numberOfLines={1}>
+            {txn.note}
+          </Text>
+        ) : null}
         <GroupChip name={txn.categoryName} colour={txn.categoryColour} />
       </View>
       <Text style={[styles.amount, { color: isDebit ? c.text : c.credit }]}>
@@ -55,6 +60,7 @@ const styles = StyleSheet.create({
   middle: { flex: 1, marginHorizontal: space.md },
   payee: { fontSize: 16, fontWeight: '600' },
   meta: { fontSize: 12, marginTop: 2 },
+  note: { fontSize: 12, fontStyle: 'italic', marginTop: 2 },
   amount: { fontSize: 16, fontWeight: '700' },
   pressed: { opacity: 0.7 },
 });

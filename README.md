@@ -99,7 +99,7 @@ parsers import nothing from React Native, so they run anywhere (including a futu
 
 ## Groups and auto-sorting
 
-Every payment can be in one **group** (the spec's "categories"): Food & Dining, Friends / Splits,
+Every payment can be in one **group** (the spec's "categories"): Food & Dining, Friends,
 or any group you create. A payment is placed by the first confident step of this chain
 (`src/categorize/`):
 
@@ -109,6 +109,11 @@ or any group you create. A payment is placed by the first confident step of this
    map to a group. Built-in rules come from `src/config/seedRules.json` and `seedRulesV2.json`;
    rules you add in Settings win over them. Keywords of 3 letters or fewer must match a whole word.
 3. **Income.** Money received that nothing else claimed goes to Income.
+
+Put people you know in **Friends** and people you pay once or twice in **Other people**; money
+received is **Income** unless its payer is in a group like Friends, and the Groups view splits it
+by source. Every payment can also carry a note, and the Filter and sort sheet narrows the list by
+direction, group, amount, type, search text and period, showing totals for what matches.
 
 Anything left stays "Add to a group" and is shown for you to sort. Groups marked "exclude from
 totals" (Transfers (self)) do not count towards spending. Contacts and heuristics (spec steps 2

@@ -103,4 +103,9 @@ export const MIGRATIONS: string[][] = [
     )`,
     'CREATE INDEX idx_deleted_ref ON deleted_txns(upi_ref)',
   ],
+  [
+    // Your own note on a payment ("lunch with Priya", "rent for November").
+    'ALTER TABLE transactions ADD COLUMN note TEXT',
+    // The default groups are refined in db.ts: Friends, and Other people for one-off payees.
+  ],
 ];
