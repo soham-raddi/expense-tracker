@@ -22,8 +22,13 @@ export async function ingestSms(sms: RawSms): Promise<IngestOutcome> {
   }
   const db = await getDb();
   if (result.kind === 'unparsed') {
-    await insertUnparsed(db, sms);
-    emitDataChanged();
+    const state = await insertUnparsed(db, sms);
+    if (state === 'dismissed') {
+      return 'ignored'; // you already dismissed this one
+    }
+    if (state === 'new') {
+      emitDataChanged();
+    }
     return 'unparsed';
   }
   const saved = await insertSmsTxn(db, result.txn);

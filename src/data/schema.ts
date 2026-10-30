@@ -83,4 +83,8 @@ export const MIGRATIONS: string[][] = [
     // display_name stays what the bank sent, so you can always see it.
     'ALTER TABLE payees ADD COLUMN custom_name TEXT',
   ],
+  [
+    // A dismissed message stays in the table so a later inbox scan does not bring it back.
+    'ALTER TABLE unparsed_sms ADD COLUMN dismissed INTEGER NOT NULL DEFAULT 0',
+  ],
 ];

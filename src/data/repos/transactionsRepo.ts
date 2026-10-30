@@ -100,17 +100,23 @@ export async function insertSmsTxn(db: DB, txn: ParsedTxn): Promise<boolean> {
   return true;
 }
 
-export async function insertUnparsed(db: DB, sms: RawSms): Promise<void> {
+export type UnparsedOutcome = 'new' | 'listed' | 'dismissed';
+
+/** Adds a message to the Unparsed list unless it is already there (listed or dismissed). */
+export async function insertUnparsed(db: DB, sms: RawSms): Promise<UnparsedOutcome> {
   const dup = await db.execute(
-    'SELECT id FROM unparsed_sms WHERE sender = ? AND body = ? AND ABS(timestamp - ?) < ?',
+    'SELECT dismissed FROM unparsed_sms WHERE sender = ? AND body = ? AND ABS(timestamp - ?) < ?',
     [sms.sender, sms.body, sms.timestamp, SAME_SMS_WINDOW_MS],
   );
-  if (dup.rows.length === 0) {
-    await db.execute(
-      'INSERT INTO unparsed_sms (sender, body, timestamp) VALUES (?, ?, ?)',
-      [sms.sender, sms.body, sms.timestamp],
-    );
+  if (dup.rows.length > 0) {
+    return Number(dup.rows[0].dismissed) === 1 ? 'dismissed' : 'listed';
   }
+  await db.execute('INSERT INTO unparsed_sms (sender, body, timestamp) VALUES (?, ?, ?)', [
+    sms.sender,
+    sms.body,
+    sms.timestamp,
+  ]);
+  return 'new';
 }
 
 export interface TxnRow {
@@ -197,7 +203,7 @@ export interface UnparsedRow {
 
 export async function unparsedList(db: DB): Promise<UnparsedRow[]> {
   const res = await db.execute(
-    'SELECT id, sender, body, timestamp FROM unparsed_sms ORDER BY timestamp DESC',
+    'SELECT id, sender, body, timestamp FROM unparsed_sms WHERE dismissed = 0 ORDER BY timestamp DESC',
   );
   return res.rows.map(r => ({
     id: Number(r.id),
@@ -207,11 +213,20 @@ export async function unparsedList(db: DB): Promise<UnparsedRow[]> {
   }));
 }
 
+/** Hides a message from the Unparsed list for good. It is kept, so a re-scan will not re-add it. */
+export async function dismissUnparsed(db: DB, id: number): Promise<void> {
+  await db.execute('UPDATE unparsed_sms SET dismissed = 1 WHERE id = ?', [id]);
+}
+
+export async function dismissAllUnparsed(db: DB): Promise<void> {
+  await db.execute('UPDATE unparsed_sms SET dismissed = 1 WHERE dismissed = 0');
+}
+
 export async function deleteUnparsed(db: DB, id: number): Promise<void> {
   await db.execute('DELETE FROM unparsed_sms WHERE id = ?', [id]);
 }
 
 export async function unparsedCount(db: DB): Promise<number> {
-  const res = await db.execute('SELECT COUNT(*) AS n FROM unparsed_sms');
+  const res = await db.execute('SELECT COUNT(*) AS n FROM unparsed_sms WHERE dismissed = 0');
   return Number(res.rows[0]?.n ?? 0);
 }
