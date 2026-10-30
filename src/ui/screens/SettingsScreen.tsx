@@ -23,7 +23,7 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
   );
 }
 
-export function SettingsScreen({ onOpen }: { onOpen: (screen: 'groups' | 'rules' | 'privacy') => void }) {
+export function SettingsScreen({ onOpen }: { onOpen: (screen: 'groups' | 'rules' | 'privacy' | 'import') => void }) {
   const c = usePalette();
   const [smsAllowed, setSmsAllowed] = useState<boolean | null>(null);
   const [importing, setImporting] = useState(false);
@@ -121,8 +121,7 @@ export function SettingsScreen({ onOpen }: { onOpen: (screen: 'groups' | 'rules'
 
       <Card title="Groups and rules">
         <Text style={body}>
-          Make your own groups (friends, merchants, food) and set rules so payments to places like
-          Dominos, Swiggy or Zomato sort themselves.
+          Make your own groups and set rules so payments to the same place sort themselves.
         </Text>
         <Button label="Your groups" kind="secondary" onPress={() => onOpen('groups')} />
         <Button label="Auto-sort rules" kind="secondary" onPress={() => onOpen('rules')} />
@@ -130,10 +129,10 @@ export function SettingsScreen({ onOpen }: { onOpen: (screen: 'groups' | 'rules'
 
       <Card title="Bank statements">
         <Text style={body}>
-          Import a PDF statement for any date range, even for a half month. This is coming in the
-          next update.
+          Import a PDF statement for any date range, even for a half month. It includes every
+          transaction, not only UPI, and payments you already have are not duplicated.
         </Text>
-        <Button label="Import statement" kind="secondary" onPress={() => {}} disabled />
+        <Button label="Import statement" kind="secondary" onPress={() => onOpen('import')} />
       </Card>
 
       <Card title="Your data">

@@ -11,6 +11,7 @@ import { GroupsScreen } from './ui/screens/GroupsScreen';
 import { HomeScreen } from './ui/screens/HomeScreen';
 import { monthOf, type MonthRef } from './lib/format';
 import { MonthsScreen } from './ui/screens/MonthsScreen';
+import { ImportStatementScreen } from './ui/screens/ImportStatementScreen';
 import { PrivacyScreen } from './ui/screens/PrivacyScreen';
 import { RulesScreen } from './ui/screens/RulesScreen';
 import { SettingsScreen } from './ui/screens/SettingsScreen';
@@ -18,7 +19,7 @@ import { usePalette } from './ui/theme';
 import { UnparsedScreen } from './ui/screens/UnparsedScreen';
 
 type TabKey = 'home' | 'months' | 'unparsed' | 'settings';
-type Overlay = 'groups' | 'rules' | 'privacy' | null;
+type Overlay = 'groups' | 'rules' | 'privacy' | 'import' | null;
 
 function Shell() {
   const c = usePalette();
@@ -52,6 +53,8 @@ function Shell() {
           <GroupsScreen onBack={() => setOverlay(null)} />
         ) : overlay === 'rules' ? (
           <RulesScreen onBack={() => setOverlay(null)} />
+        ) : overlay === 'import' ? (
+          <ImportStatementScreen onBack={() => setOverlay(null)} />
         ) : overlay === 'privacy' ? (
           <PrivacyScreen onBack={() => setOverlay(null)} />
         ) : (

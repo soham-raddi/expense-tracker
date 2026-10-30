@@ -151,7 +151,7 @@ export function TransactionDetailSheet({ txn, onClose, onChangeGroup, onRename, 
                 <TextInput
                   value={noteDraft}
                   onChangeText={setNoteDraft}
-                  placeholder="Add a note, e.g. lunch with Priya"
+                  placeholder="Add a note about this payment"
                   placeholderTextColor={c.textMuted}
                   maxLength={200}
                   multiline
@@ -173,13 +173,14 @@ export function TransactionDetailSheet({ txn, onClose, onChangeGroup, onRename, 
                 <View style={styles.rename} onLayout={e => (renameY.current = e.nativeEvent.layout.y)}>
                   <Text style={[styles.sectionTitle, { color: c.text }]}>Your name for this payee</Text>
                   <Text style={[styles.hint, { color: c.textMuted }]}>
-                    Useful when the bank shows someone else's name, like a friend whose UPI is in her
-                    father's name. It applies to every payment to this payee.
+                    Choose a name you will recognise when the bank shows something unclear, such as a
+                    shop code or a name that is not the person you paid. It applies to every payment
+                    to this payee.
                   </Text>
                   <TextInput
                     value={draft}
                     onChangeText={setDraft}
-                    placeholder={txn.payeeOriginalName ?? 'e.g. Priya'}
+                    placeholder={txn.payeeOriginalName ?? 'A name you will recognise'}
                     placeholderTextColor={c.textMuted}
                     maxLength={40}
                     autoCapitalize="words"
@@ -200,7 +201,7 @@ export function TransactionDetailSheet({ txn, onClose, onChangeGroup, onRename, 
                 </View>
               )}
 
-              <Text style={[styles.sectionTitle, { color: c.text }]}>Original message</Text>
+              <Text style={[styles.sectionTitle, { color: c.text }]}>{txn.source === 'STATEMENT' ? 'Statement row' : 'Original message'}</Text>
               <View style={[styles.message, { backgroundColor: c.cardAlt }]}>
                 <Text style={[styles.messageText, { color: c.text }]} selectable>
                   {txn.rawText}

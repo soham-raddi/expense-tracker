@@ -176,7 +176,7 @@ export function FilterSheet({ visible, filters, categories, modes, resultCount, 
               <TextInput
                 value={filters.search}
                 onChangeText={search => set({ search })}
-                placeholder="e.g. priya, rent, dinner"
+                placeholder="Name, note or group"
                 placeholderTextColor={c.textMuted}
                 autoCapitalize="none"
                 autoCorrect={false}

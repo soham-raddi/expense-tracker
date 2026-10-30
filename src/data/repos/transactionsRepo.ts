@@ -65,6 +65,14 @@ export async function insertSmsTxn(db: DB, txn: ParsedTxn): Promise<boolean> {
       return false;
     }
   }
+  return saveTxn(db, txn, 'SMS');
+}
+
+/**
+ * Saves a transaction that is known to be new: categorizes it and stores it.
+ * False when you deleted this payment earlier.
+ */
+export async function saveTxn(db: DB, txn: ParsedTxn, source: 'SMS' | 'STATEMENT'): Promise<boolean> {
   if (await wasDeleted(db, txn)) {
     return false; // you deleted this payment; do not bring it back
   }
@@ -84,7 +92,7 @@ export async function insertSmsTxn(db: DB, txn: ParsedTxn): Promise<boolean> {
     `INSERT INTO transactions
       (amount_paise, direction, timestamp, mode, payee_id, upi_ref, masked_account, remark,
        category_id, category_source, confidence, source, raw_text, balance_paise)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'SMS', ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       txn.amountPaise,
       txn.direction,
@@ -97,6 +105,7 @@ export async function insertSmsTxn(db: DB, txn: ParsedTxn): Promise<boolean> {
       outcome.categoryId,
       outcome.source,
       outcome.confidence,
+      source,
       txn.rawText,
       txn.balancePaise ?? null,
     ],

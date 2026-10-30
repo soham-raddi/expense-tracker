@@ -136,7 +136,7 @@ export function GroupsScreen({ onBack }: { onBack: () => void }) {
             <TextInput
               value={editing?.name ?? ''}
               onChangeText={name => editing && setEditing({ ...editing, name })}
-              placeholder="Group name, e.g. Friends"
+              placeholder="Group name"
               placeholderTextColor={c.textMuted}
               autoFocus
               maxLength={30}

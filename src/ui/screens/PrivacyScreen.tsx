@@ -44,6 +44,7 @@ const SECTIONS: Section[] = [
       'One-time passwords (OTPs) are ignored and never saved.',
       'For each bank payment message it saves the amount, date, who it was with, the last digits of your account, the reference, the balance if shown, and the full original text. The text is kept exactly as the bank sent it, so anything the bank put in it is kept too. Notes you write on a payment, and names you give a payee, are stored with it.',
       'Messages you dismissed from the Unparsed tab are hidden, not erased, so they do not come back. They are removed by Delete all data.',
+      'Statement PDFs are opened only when you choose one, read on the phone, and never copied or kept. The password you type is used once and not saved. Each transaction row is stored like a message, with its original text.',
       'Message text is never written to logs.',
     ],
   },

@@ -112,7 +112,7 @@ export function RulesScreen({ onBack }: { onBack: () => void }) {
             <TextInput
               value={keyword}
               onChangeText={setKeyword}
-              placeholder={field === 'PAYEE_NAME' ? 'e.g. dominos' : field === 'VPA' ? 'e.g. rapido' : 'e.g. chai'}
+              placeholder={field === 'PAYEE_NAME' ? 'A word in the name' : field === 'VPA' ? 'A word in the UPI ID' : 'A word in the message'}
               placeholderTextColor={c.textMuted}
               autoCapitalize="none"
               autoCorrect={false}

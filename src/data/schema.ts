@@ -79,7 +79,7 @@ export const MIGRATIONS: string[][] = [
     // More seed rules are inserted from src/config/seedRulesV2.json in db.ts.
   ],
   [
-    // A name you give a payee yourself, e.g. a friend whose UPI account is in her father's name.
+    // A name you give a payee yourself, e.g. when the bank shows a code or someone else's name.
     // display_name stays what the bank sent, so you can always see it.
     'ALTER TABLE payees ADD COLUMN custom_name TEXT',
   ],
