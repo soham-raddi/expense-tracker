@@ -1,9 +1,9 @@
 # Expense Tracker
 
-An offline expense tracker for India. It reads bank transaction SMS on Android, will import
-monthly statements, and sorts spending into categories. **Your data never leaves your phone.**
+An offline expense tracker for India. It reads bank transaction SMS on Android, imports
+bank statement PDFs, and sorts spending into categories. **Your data never leaves your phone.**
 
-> Status: Phase 1 (foundation and SMS parsing). Supported banks: ICICI Bank.
+> Status: SMS parsing and ICICI Bank statement PDF import work. Supported banks: ICICI Bank.
 
 ## The no-network guarantee
 
@@ -32,8 +32,9 @@ No app is perfectly secure: a rooted or malware-infected phone can expose any ap
 | `WAKE_LOCK` | Keep the phone awake for the second it takes to save a new SMS | all |
 | `INTERNET` | Load JS from Metro during development | **debug only** |
 
-SMS permission is optional. Without it, the app still works through statement import and manual
-entry (later phases). iOS never allows apps to read SMS.
+SMS permission is optional. Without it, the app still works through statement import. iOS never
+allows apps to read SMS. Statement PDFs are opened through Android's file picker, so no storage
+permission is needed.
 
 ## Security on the device
 
@@ -77,11 +78,12 @@ src/
   config/         categories, seed rules, bank sender codes, SMS filters (edit these, not code)
   lib/            plain helpers shared everywhere: money/date formatting, change events
   data/           types, SQLite schema, encrypted DB, totals, repos/ (database queries)
-  ingest/         SMS routing, OTP/promo filters, bank parsers (banks/), statement matching
+  ingest/         SMS routing, OTP/promo filters, bank parsers (banks/), statement PDF parsing and import (pdf/)
   categorize/     the group-sorting chain: payee memory, keyword rules, income
   ui/             theme, components/ (reusable pieces), screens/ (one per screen)
-native/android/   Kotlin modules: SMS inbox reader, live SMS receiver, secure random
+native/android/   Kotlin modules: SMS inbox reader, live SMS receiver, PDF reader, secure random
 fixtures/sms/     SYNTHETIC test SMS per bank
+fixtures/pdf/     SYNTHETIC statement text
 android/, ios/    the React Native platform projects (generated, lightly edited)
 ```
 
@@ -96,6 +98,18 @@ parsers import nothing from React Native, so they run anywhere (including a futu
    movement (promos), then calls that bank's parser.
 3. Parsed → saved as a transaction (deduplicated by UPI ref). Not parsed → saved to the
    Unparsed list with the raw text. Nothing is silently dropped.
+
+## Statement import
+
+Settings, Import statement reads an ICICI savings account statement PDF (password protected is
+fine; the password is used once and never saved). The text is read on the phone with PdfBox-Android.
+Every row is imported, UPI or not: NEFT, card, AutoPay, standing instructions, interest and
+charges. Money in or out comes from the running balance, and the app checks that the opening
+balance plus every row equals the closing balance and the bank's page totals, listing any row it
+could not read. Rows already known from SMS are matched (by UPI reference, else amount, date and
+balance), so importing the same or an overlapping statement does not duplicate anything. Only
+ICICI is supported; add a bank by writing a parser in `src/ingest/pdf/` with a synthetic fixture
+in `fixtures/pdf/`. Never commit a real statement (`statements/` is git-ignored).
 
 ## Groups and auto-sorting
 
