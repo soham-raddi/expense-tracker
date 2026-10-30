@@ -4,7 +4,8 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, RefreshControl, ScrollView, SectionList, StyleSheet, Text, View } from 'react-native';
 import { totalsOf } from '../../data/aggregate';
 import { listCategories, type Category } from '../../data/repos/categoriesRepo';
-import { clearCategory, setAlwaysAsk, setUserCategory } from '../../data/repos/categorizeRepo';
+import { clearCategory, recategorizeUncategorized, setAlwaysAsk, setUserCategory } from '../../data/repos/categorizeRepo';
+import { setPayeeCustomName } from '../../data/repos/payeesRepo';
 import { getDb } from '../../data/db';
 import { transactionsBetween, type TxnRow } from '../../data/repos/transactionsRepo';
 import { groupBreakdown } from '../../data/aggregate';
@@ -13,6 +14,7 @@ import { Dot, Segmented } from '../components/GroupBits';
 import { EmptyState } from '../components/EmptyState';
 import { MonthSwitcher } from '../components/MonthSwitcher';
 import { PaymentGroupSheet } from '../components/PaymentGroupSheet';
+import { TransactionDetailSheet } from '../components/TransactionDetailSheet';
 import { SummaryCard } from '../components/SummaryCard';
 import { TransactionItem } from '../components/TransactionItem';
 import { formatRupees, groupByDay, monthBounds, monthOf, sameMonth, type MonthRef } from '../../lib/format';
@@ -34,6 +36,7 @@ export function HomeScreen({ month, onMonthChange, onOpenSettings }: Props) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [view, setView] = useState<View_>('timeline');
   const [filter, setFilter] = useState<GroupFilter>(null);
+  const [detailId, setDetailId] = useState<number | null>(null);
   const [sheetTxn, setSheetTxn] = useState<TxnRow | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -71,6 +74,19 @@ export function HomeScreen({ month, onMonthChange, onOpenSettings }: Props) {
   );
   const sections = useMemo(() => groupByDay(visibleRows, Date.now()), [visibleRows]);
 
+  // Looked up from the loaded rows so the sheet updates when the payment changes (e.g. a rename).
+  const detailTxn = useMemo(() => rows.find(r => r.id === detailId) ?? null, [rows, detailId]);
+
+  const rename = async (txn: TxnRow, name: string | null) => {
+    if (txn.payeeId == null) {
+      return;
+    }
+    const db = await getDb();
+    await setPayeeCustomName(db, txn.payeeId, name);
+    await recategorizeUncategorized(db); // a rule may match the new name
+    emitDataChanged();
+  };
+
   const choose = async (txn: TxnRow, categoryId: number, applyToPayee: boolean) => {
     await setUserCategory(await getDb(), txn.id, categoryId, applyToPayee);
     setSheetTxn(null);
@@ -103,6 +119,18 @@ export function HomeScreen({ month, onMonthChange, onOpenSettings }: Props) {
         </Pressable>
       )}
     </View>
+  );
+
+  const detail = (
+    <TransactionDetailSheet
+      txn={detailTxn}
+      onClose={() => setDetailId(null)}
+      onChangeGroup={txn => {
+        setDetailId(null);
+        setSheetTxn(txn);
+      }}
+      onRename={rename}
+    />
   );
 
   const sheet = (
@@ -180,6 +208,7 @@ export function HomeScreen({ month, onMonthChange, onOpenSettings }: Props) {
           </View>
         </ScrollView>
         {sheet}
+        {detail}
       </>
     );
   }
@@ -218,12 +247,13 @@ export function HomeScreen({ month, onMonthChange, onOpenSettings }: Props) {
               index === section.data.length - 1 && styles.itemLast,
               { backgroundColor: c.card },
             ]}>
-            <TransactionItem txn={item} onPress={() => setSheetTxn(item)} />
+            <TransactionItem txn={item} onPress={() => setDetailId(item.id)} />
             {index < section.data.length - 1 && <View style={[styles.divider, { backgroundColor: c.border }]} />}
           </View>
         )}
       />
       {sheet}
+      {detail}
     </>
   );
 }

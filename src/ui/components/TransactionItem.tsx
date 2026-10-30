@@ -13,7 +13,7 @@ export function TransactionItem({ txn, onPress }: { txn: TxnRow; onPress: () => 
   return (
     <Pressable
       onPress={onPress}
-      accessibilityLabel={`${txn.payeeName ?? 'Payment'}, choose group`}
+      accessibilityLabel={`${txn.payeeName ?? 'Payment'}, open details`}
       style={({ pressed }) => [styles.row, { backgroundColor: c.card }, pressed && styles.pressed]}>
       <View style={[styles.avatar, { backgroundColor: isDebit ? c.debitSoft : c.creditSoft }]}>
         <Text style={[styles.avatarText, { color: isDebit ? c.debit : c.credit }]}>

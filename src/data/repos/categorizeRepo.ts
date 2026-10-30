@@ -3,6 +3,7 @@
 import type { DB } from '@op-engineering/op-sqlite';
 import { runChain, type ChainOutcome } from '../../categorize/chain';
 import type { CategorizeContext, CategorizeInput, Rule } from '../../categorize/types';
+import { matchText } from '../../lib/names';
 import type { Direction, RuleField } from '../types';
 
 export async function loadContext(db: DB): Promise<CategorizeContext> {
@@ -30,7 +31,7 @@ export function categorize(input: CategorizeInput, ctx: CategorizeContext): Chai
 export async function recategorizeUncategorized(db: DB): Promise<number> {
   const ctx = await loadContext(db);
   const res = await db.execute(
-    `SELECT t.id, t.direction, t.remark, p.display_name, p.vpa, p.default_category_id, p.always_ask
+    `SELECT t.id, t.direction, t.remark, p.display_name, p.custom_name, p.vpa, p.default_category_id, p.always_ask
      FROM transactions t LEFT JOIN payees p ON p.id = t.payee_id
      WHERE t.category_id IS NULL`,
   );
@@ -39,7 +40,10 @@ export async function recategorizeUncategorized(db: DB): Promise<number> {
     const outcome = categorize(
       {
         direction: r.direction === 'CREDIT' ? 'CREDIT' : ('DEBIT' as Direction),
-        payeeName: r.display_name == null ? null : String(r.display_name),
+        payeeName: matchText(
+          r.display_name == null ? null : String(r.display_name),
+          r.custom_name == null ? null : String(r.custom_name),
+        ),
         vpa: r.vpa == null ? null : String(r.vpa),
         remark: r.remark == null ? null : String(r.remark),
         payeeDefaultCategoryId: r.default_category_id == null ? null : Number(r.default_category_id),

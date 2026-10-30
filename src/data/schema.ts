@@ -78,4 +78,9 @@ export const MIGRATIONS: string[][] = [
     "UPDATE categories SET exclude_from_totals = 1 WHERE name = 'Transfers (self)'",
     // More seed rules are inserted from src/config/seedRulesV2.json in db.ts.
   ],
+  [
+    // A name you give a payee yourself, e.g. a friend whose UPI account is in her father's name.
+    // display_name stays what the bank sent, so you can always see it.
+    'ALTER TABLE payees ADD COLUMN custom_name TEXT',
+  ],
 ];
