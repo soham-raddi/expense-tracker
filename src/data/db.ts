@@ -19,6 +19,8 @@ async function openDb(): Promise<DB> {
   const encryptionKey = await getOrCreateDbKey();
   const db = open({ name: 'expensetracker.db', encryptionKey });
   await db.execute('PRAGMA foreign_keys = ON');
+  // Overwrite deleted content with zeros instead of leaving it in the file.
+  await db.execute('PRAGMA secure_delete = ON');
   await migrate(db);
   await recategorizeUncategorized(db);
   return db;

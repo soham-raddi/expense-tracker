@@ -1,10 +1,16 @@
-// Settings: SMS permission and import, privacy summary, about.
+// Settings: SMS permission and import, groups and rules, your data, privacy, about.
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { getDb } from '../../data/db';
+import { deleteAllData } from '../../data/repos/dataRepo';
+import { getImportLimit, setImportLimit } from '../../data/repos/settingsRepo';
 import { importInbox } from '../../ingest/smsIngest';
+import { dateTimeLabel } from '../../lib/format';
+import { emitDataChanged } from '../../lib/events';
 import { hasSmsPermission, requestSmsPermission, syncSenderCodes } from '../../ingest/smsNative';
 import { Button } from '../components/Button';
+import { DeleteAllModal } from '../components/DeleteAllModal';
 import { radius, space, usePalette } from '../theme';
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
@@ -17,19 +23,49 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
   );
 }
 
-export function SettingsScreen({ onOpen }: { onOpen: (screen: 'groups' | 'rules') => void }) {
+export function SettingsScreen({ onOpen }: { onOpen: (screen: 'groups' | 'rules' | 'privacy') => void }) {
   const c = usePalette();
   const [smsAllowed, setSmsAllowed] = useState<boolean | null>(null);
   const [importing, setImporting] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+  const [importLimit, setLimit] = useState<number | null>(null);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteResult, setDeleteResult] = useState<string | null>(null);
 
   const refreshPermission = useCallback(async () => {
     setSmsAllowed(await hasSmsPermission());
   }, []);
 
+  const refreshLimit = useCallback(async () => {
+    setLimit(await getImportLimit(await getDb()));
+  }, []);
+
   useEffect(() => {
     refreshPermission();
-  }, [refreshPermission]);
+    refreshLimit();
+  }, [refreshPermission, refreshLimit]);
+
+  const onDeleteAll = async (ignoreOlderMessages: boolean) => {
+    setDeleting(true);
+    try {
+      await deleteAllData(await getDb(), ignoreOlderMessages);
+      setConfirmingDelete(false);
+      setResult(null);
+      setDeleteResult('All your data was deleted from this phone.');
+      await refreshLimit();
+      emitDataChanged();
+    } catch {
+      setDeleteResult('Something went wrong and not everything was deleted. Please try again.');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const allowOldMessages = async () => {
+    await setImportLimit(await getDb(), null);
+    await refreshLimit();
+  };
 
   const onImport = async () => {
     setResult(null);
@@ -100,14 +136,38 @@ export function SettingsScreen({ onOpen }: { onOpen: (screen: 'groups' | 'rules'
         <Button label="Import statement" kind="secondary" onPress={() => {}} disabled />
       </Card>
 
-      <Card title="Privacy">
+      <Card title="Your data">
         <Text style={body}>
-          Everything stays on this phone, encrypted. The app has no internet access, no accounts,
-          no analytics and no cloud backup. It locks every time you leave and come back.
+          Your payments and the original messages are saved only on this phone. You can delete one
+          payment from its details, or wipe everything here. Your groups and rules are kept.
         </Text>
+        {importLimit != null && (
+          <View style={[styles.note, { backgroundColor: c.cardAlt }]}>
+            <Text style={[styles.noteText, { color: c.text }]}>
+              Imports skip messages received before {dateTimeLabel(importLimit)}.
+            </Text>
+            <Button label="Allow older messages again" kind="secondary" onPress={allowOldMessages} />
+          </View>
+        )}
+        {deleteResult && <Text style={[styles.result, { color: c.text, backgroundColor: c.cardAlt }]}>{deleteResult}</Text>}
+        <Button label="Delete all my data" kind="danger" onPress={() => setConfirmingDelete(true)} />
+      </Card>
+
+      <Card title="Privacy and security">
+        <Text style={body}>
+          Everything stays on this phone, encrypted, and the app has no internet access. Read exactly
+          what it stores, how it is protected, and what it cannot protect against.
+        </Text>
+        <Button label="How your data is protected" kind="secondary" onPress={() => onOpen('privacy')} />
       </Card>
 
       <Text style={[styles.footer, { color: c.textMuted }]}>Expense Tracker · version 0.1</Text>
+      <DeleteAllModal
+        visible={confirmingDelete}
+        busy={deleting}
+        onCancel={() => setConfirmingDelete(false)}
+        onConfirm={onDeleteAll}
+      />
     </ScrollView>
   );
 }
@@ -127,6 +187,8 @@ const styles = StyleSheet.create({
   statusRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   dot: { width: 10, height: 10, borderRadius: 5 },
   status: { fontSize: 14, fontWeight: '600' },
+  note: { borderRadius: radius.sm, padding: space.md, gap: space.md },
+  noteText: { fontSize: 14, lineHeight: 20 },
   result: { fontSize: 14, borderRadius: radius.sm, padding: space.md, overflow: 'hidden' },
   footer: { fontSize: 12, textAlign: 'center', marginTop: space.md },
 });

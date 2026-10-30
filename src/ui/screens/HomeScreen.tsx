@@ -5,6 +5,7 @@ import { Pressable, RefreshControl, ScrollView, SectionList, StyleSheet, Text, V
 import { totalsOf } from '../../data/aggregate';
 import { listCategories, type Category } from '../../data/repos/categoriesRepo';
 import { clearCategory, recategorizeUncategorized, setAlwaysAsk, setUserCategory } from '../../data/repos/categorizeRepo';
+import { deleteTransaction } from '../../data/repos/dataRepo';
 import { setPayeeCustomName } from '../../data/repos/payeesRepo';
 import { getDb } from '../../data/db';
 import { transactionsBetween, type TxnRow } from '../../data/repos/transactionsRepo';
@@ -87,6 +88,12 @@ export function HomeScreen({ month, onMonthChange, onOpenSettings }: Props) {
     emitDataChanged();
   };
 
+  const remove = async (txn: TxnRow) => {
+    await deleteTransaction(await getDb(), txn);
+    setDetailId(null);
+    emitDataChanged();
+  };
+
   const choose = async (txn: TxnRow, categoryId: number, applyToPayee: boolean) => {
     await setUserCategory(await getDb(), txn.id, categoryId, applyToPayee);
     setSheetTxn(null);
@@ -130,6 +137,7 @@ export function HomeScreen({ month, onMonthChange, onOpenSettings }: Props) {
         setSheetTxn(txn);
       }}
       onRename={rename}
+      onDelete={remove}
     />
   );
 

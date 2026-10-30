@@ -3,6 +3,7 @@
 import type { DB } from '@op-engineering/op-sqlite';
 import { matchText, shownName } from '../../lib/names';
 import { categorize, loadContext } from './categorizeRepo';
+import { wasDeleted } from './dataRepo';
 import type { LiteTxn } from '../aggregate';
 import type { ParsedTxn, RawSms } from '../types';
 
@@ -63,6 +64,9 @@ export async function insertSmsTxn(db: DB, txn: ParsedTxn): Promise<boolean> {
     if (dup.rows.length > 0) {
       return false;
     }
+  }
+  if (await wasDeleted(db, txn)) {
+    return false; // you deleted this payment; do not bring it back
   }
   const payee = await upsertPayee(db, txn);
   const outcome = categorize(

@@ -46,6 +46,13 @@ entry (later phases). iOS never allows apps to read SMS.
 - Cloud backup and device transfer are disabled (`allowBackup="false"`, `data_extraction_rules.xml`).
 - Account numbers are stored masked (`XX123`). OTP SMS are ignored entirely.
 - `console.*` calls are stripped from release bundles; native code never logs SMS bodies.
+- **Deleting data:** a payment can be deleted from its details, and Settings has "Delete all my
+  data". SQLite `secure_delete` is on, and delete-all runs `VACUUM`, so deleted content is
+  overwritten rather than left in free pages. A deleted payment leaves only a short non-reversible
+  fingerprint (and its UPI reference) so a later inbox scan does not re-import it; the message text
+  is not kept. Delete-all can also set an import limit so older messages stay out.
+- The in-app "Privacy and security" screen (`src/ui/screens/PrivacyScreen.tsx`) explains this to
+  users, including what the app cannot protect against. Update it whenever behaviour changes.
 
 ## Setup
 

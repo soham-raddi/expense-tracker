@@ -2,7 +2,7 @@
 // It shows whatever the payment was imported from (an SMS now, a statement row later).
 
 import React, { useEffect, useRef, useState } from 'react';
-import { KeyboardAvoidingView, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, KeyboardAvoidingView, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import type { TxnRow } from '../../data/repos/transactionsRepo';
 import { dateTimeLabel, formatRupees, initials, modeLabel } from '../../lib/format';
 import { cleanCustomName } from '../../lib/names';
@@ -15,6 +15,7 @@ interface Props {
   onClose: () => void;
   onChangeGroup: (txn: TxnRow) => void;
   onRename: (txn: TxnRow, name: string | null) => void;
+  onDelete: (txn: TxnRow) => void;
 }
 
 const SOURCE_LABEL: Record<TxnRow['source'], string> = {
@@ -23,7 +24,7 @@ const SOURCE_LABEL: Record<TxnRow['source'], string> = {
   BOTH: 'Bank SMS and statement',
 };
 
-export function TransactionDetailSheet({ txn, onClose, onChangeGroup, onRename }: Props) {
+export function TransactionDetailSheet({ txn, onClose, onChangeGroup, onRename, onDelete }: Props) {
   const c = usePalette();
   const [draft, setDraft] = useState('');
   const scrollRef = useRef<React.ComponentRef<typeof ScrollView>>(null);
@@ -40,6 +41,20 @@ export function TransactionDetailSheet({ txn, onClose, onChangeGroup, onRename }
     if (txn && changed) {
       onRename(txn, cleanCustomName(draft));
     }
+  };
+
+  const confirmDelete = () => {
+    if (!txn) {
+      return;
+    }
+    Alert.alert(
+      'Delete this payment?',
+      'It is removed from this phone for good, along with its saved message. It will not come back when you import again.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Delete', style: 'destructive', onPress: () => onDelete(txn) },
+      ],
+    );
   };
 
   // The keyboard covers the lower part of the sheet; bring the name box and its button into view.
@@ -150,6 +165,10 @@ export function TransactionDetailSheet({ txn, onClose, onChangeGroup, onRename }
                   {txn.rawText}
                 </Text>
               </View>
+
+              <View style={styles.deleteRow}>
+                <Button label="Delete this payment" kind="danger" onPress={confirmDelete} />
+              </View>
             </ScrollView>
           )}
         </View>
@@ -193,4 +212,5 @@ const styles = StyleSheet.create({
   actions: { flexDirection: 'row', gap: space.md, marginTop: space.xs },
   message: { borderRadius: radius.md, padding: space.lg, marginTop: space.sm },
   messageText: { fontSize: 14, lineHeight: 21 },
+  deleteRow: { marginTop: space.xl },
 });

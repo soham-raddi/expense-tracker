@@ -87,4 +87,20 @@ export const MIGRATIONS: string[][] = [
     // A dismissed message stays in the table so a later inbox scan does not bring it back.
     'ALTER TABLE unparsed_sms ADD COLUMN dismissed INTEGER NOT NULL DEFAULT 0',
   ],
+  [
+    // Small app settings, e.g. "do not import messages older than this".
+    `CREATE TABLE app_settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL
+    )`,
+    // Remembers that a payment was deleted so a later inbox scan does not bring it back.
+    // It keeps a fingerprint of the message, never the message text.
+    `CREATE TABLE deleted_txns (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      upi_ref TEXT,
+      text_hash TEXT NOT NULL,
+      timestamp INTEGER NOT NULL
+    )`,
+    'CREATE INDEX idx_deleted_ref ON deleted_txns(upi_ref)',
+  ],
 ];
